@@ -8,9 +8,9 @@ final ThemeData customTheme = ThemeData(
     bodyLarge: TextStyle(fontSize: 18, color: Colors.black87),
   ),
   appBarTheme: const AppBarTheme(
-    color: Colors.teal,
-    iconTheme: IconThemeData(color: Colors.white, size: 30),
-    titleTextStyle: TextStyle(fontSize: 32, color: Colors.white),
+    color: Colors.white,
+    iconTheme: IconThemeData(color: Colors.teal, size: 30),
+    titleTextStyle: TextStyle(fontSize: 32, color: Colors.teal),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: Colors.white70,

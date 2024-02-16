@@ -78,11 +78,18 @@ class MainApp extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(text: 'Welcome back, '),
-                          TextSpan(text: '[Name]', style: TextStyle(color: Colors.teal)),
+                          TextSpan(
+                              text: '[Name]',
+                              style: TextStyle(color: Colors.teal)),
                           TextSpan(text: '!'),
                         ]),
                   ),
                 ),
+              ),
+              const Divider(
+                height: 20,
+                thickness: 3,
+                color: Color.fromARGB(255, 173, 211, 207),
               ),
               SingleChildScrollView(
                 // scrollDirection: Axis.horizontal,
@@ -238,6 +245,11 @@ class MainApp extends StatelessWidget {
                   ],
                 ),
               ),
+              const Divider(
+                height: 20,
+                thickness: 3,
+                color: Color.fromARGB(255, 173, 211, 207),
+              ),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
@@ -251,64 +263,46 @@ class MainApp extends StatelessWidget {
                   ),
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(
-                    4,
-                    (index) {
-                      return Container(
-                        margin: const EdgeInsets.all(8),
-                        padding: const EdgeInsets.all(0),
-                        height: 150,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1.5,
-                              blurRadius: 2,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                          image: const DecorationImage(
-                            image:
-                                AssetImage('assets/images/tempRecipeImg.jpg'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 500,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: Colors.black.withOpacity(0.3),
-                              ),
-                            ),
-                            const Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Text(
-                                  'Pepperoni Grilled Cheese',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+              Container(
+                height: 700,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      15,
+                      (index) {
+                        return Container(
+                          margin: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(0),
+                          height: 150,
+                          width: 390,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: Colors.teal),
+                          child:  Stack(
+                            children: [
+                              Image.asset('assets/images/tempRecipeImg.jpg'),
+                              const Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    'Pepperoni Grilled Cheese',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-              Container(
+            Container(
                 margin: const EdgeInsets.only(top: 10),
                 padding: const EdgeInsets.all(0),
                 height: 150,
@@ -317,8 +311,8 @@ class MainApp extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   gradient: const LinearGradient(
                       colors: [
-                        Color.fromRGBO(0, 150, 136, 1),
-                        Color.fromRGBO(128, 203, 196, 1),
+                        Color(0xFF009688),
+                        Color(0xFF80CBC4),
                       ],
                       begin: FractionalOffset(0.0, 0.0),
                       end: FractionalOffset(1.0, 0.0),

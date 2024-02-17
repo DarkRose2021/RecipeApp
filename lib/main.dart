@@ -41,27 +41,131 @@ class Splash2 extends StatelessWidget {
   }
 }
 
+Drawer appDraw() {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        const DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.teal,
+          ),
+          child: Text(
+            'Recipe App',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.favorite),
+          title: const Text('Favorites'),
+          onTap: () {
+            print('Favorites Clicked');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.add_circle_rounded),
+          title: const Text('Add Recipe'),
+          onTap: () {
+            print('Add Recipe Clicked');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.bookmark),
+          title: const Text('Saved Recipes'),
+          onTap: () {
+            print('Saved Recipes Clicked');
+          },
+        ),
+        ListTile(
+          leading: const ImageIcon(
+            AssetImage('assets/icons/recipe.png'),
+          ),
+          title: const Text('Your Recipes'),
+          onTap: () {
+            print('Your Recipes Clicked');
+          },
+        ),
+        ListTile(
+          leading: const ImageIcon(
+            AssetImage('assets/icons/mealPlan.png'),
+          ),
+          title: const Text('Your Meal Plans'),
+          onTap: () {
+            print('Meal Plans Clicked');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.add_circle_rounded),
+          title: const Text('Create Meal Plans'),
+          onTap: () {
+            print('Create Meal Plans Clicked');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.shopping_cart_outlined),
+          title: const Text('Shopping Lists'),
+          onTap: () {
+            print('Shopping Lists Clicked');
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: const Text('Settings'),
+          onTap: () {
+            print('Settings Clicked');
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+BottomNavigationBar appNav({int index = 0}) {
+  return BottomNavigationBar(
+    currentIndex: index,
+    items: const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.search),
+        label: 'Search',
+      ),
+      BottomNavigationBarItem(
+        icon: ImageIcon(
+          AssetImage('assets/icons/recipe.png'),
+        ),
+        label: 'Saved Recipes',
+      ),
+    ],
+  );
+}
+
+AppBar bar() {
+  const profileButton = Padding(
+    padding: EdgeInsets.all(8.0),
+    child: Icon(
+      Icons.person_rounded,
+      size: 40,
+    ),
+  );
+  return AppBar(
+    centerTitle: true,
+    title: const Text('Recipe App'),
+    actions: const [profileButton],
+  );
+}
+
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const profileButton = Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Icon(
-        Icons.person_rounded,
-        size: 40,
-      ),
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Recipe App'),
-          actions: const [profileButton],
-        ),
+        appBar: bar(),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -349,7 +453,10 @@ class MainApp extends StatelessWidget {
                     minWidth: 100.0,
                     child: ElevatedButton(
                       onPressed: () {
-                        print('Create Meal Plan Button Clicked');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AllRecipes()),
+                        );
                       },
                       style: ButtonStyle(
                         foregroundColor:
@@ -376,100 +483,25 @@ class MainApp extends StatelessWidget {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.teal,
-                ),
-                child: Text(
-                  'Recipe App',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.favorite),
-                title: const Text('Favorites'),
-                onTap: () {
-                  print('Favorites Clicked');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.add_circle_rounded),
-                title: const Text('Add Recipe'),
-                onTap: () {
-                  print('Add Recipe Clicked');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.bookmark),
-                title: const Text('Saved Recipes'),
-                onTap: () {
-                  print('Saved Recipes Clicked');
-                },
-              ),
-              ListTile(
-                leading: const ImageIcon(
-                  AssetImage('assets/icons/recipe.png'),
-                ),
-                title: const Text('Your Recipes'),
-                onTap: () {
-                  print('Your Recipes Clicked');
-                },
-              ),
-              ListTile(
-                leading: const ImageIcon(
-                  AssetImage('assets/icons/mealPlan.png'),
-                ),
-                title: const Text('Your Meal Plans'),
-                onTap: () {
-                  print('Meal Plans Clicked');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.add_circle_rounded),
-                title: const Text('Create Meal Plans'),
-                onTap: () {
-                  print('Create Meal Plans Clicked');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.shopping_cart_outlined),
-                title: const Text('Shopping Lists'),
-                onTap: () {
-                  print('Shopping Lists Clicked');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Settings'),
-                onTap: () {
-                  print('Settings Clicked');
-                },
-              ),
-            ],
-          ),
+        drawer: appDraw(),
+        bottomNavigationBar: appNav(),
+      ),
+      theme: customTheme,
+    );
+  }
+}
+
+class AllRecipes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: bar(),
+        body: SingleChildScrollView(
+          
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: ImageIcon(
-                AssetImage('assets/icons/recipe.png'),
-              ),
-              label: 'Saved Recipes',
-            ),
-          ],
-        ),
+        drawer: appDraw(),
+        bottomNavigationBar: appNav(),
       ),
       theme: customTheme,
     );

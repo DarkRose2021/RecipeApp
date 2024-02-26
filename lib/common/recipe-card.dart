@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 
-Container recipeCard(String imagePath, String name,) {
+Container recipeCard(String imagePath, String name) {
   return Container(
     margin: const EdgeInsets.all(8),
     padding: const EdgeInsets.all(0),

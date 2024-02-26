@@ -16,6 +16,16 @@ class AllRecipes extends StatefulWidget {
 enum AccountItems { profile, settings, logout }
 
 class _AllRecipes extends State<AllRecipes> {
+  String query = '';
+  TextEditingController searchController = TextEditingController();
+  List<String> allRecipeNames = [
+    'Pizza',
+    'Burger',
+    'Pie',
+    'Cake',
+    'Bread',
+  ];
+
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -81,33 +91,23 @@ class _AllRecipes extends State<AllRecipes> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const Padding(
-                padding:
-                    EdgeInsets.only(top: 20, bottom: 10, left: 5, right: 5),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 10, left: 5, right: 5),
                 child: SearchBar(
-                  hintText: 'Search Recipes',
-                  leading: Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
-                ),
+                    hintText: 'Search Recipes',
+                    controller: searchController,
+                    leading: const Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        query = value;
+                      });
+                    }),
               ),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              SvgPicture.asset(
-                'assets/icons/recipe.png',
-                width: 40.0,
-              ),
+              ...filteredRecipeCards(),
             ],
           ),
         ),
@@ -116,5 +116,19 @@ class _AllRecipes extends State<AllRecipes> {
       ),
       theme: customTheme,
     );
+  }
+
+   List<Widget> filteredRecipeCards() {
+    String searchTerm = query.toLowerCase();
+
+    List<String> filteredRecipeNames = allRecipeNames
+        .where((recipeName) => recipeName.toLowerCase().contains(searchTerm))
+        .toList();
+
+    List<Widget> filteredCards = filteredRecipeNames
+        .map((recipeName) => recipeCard('assets/images/tempRecipeImg.jpg', recipeName))
+        .toList();
+
+    return filteredCards;
   }
 }

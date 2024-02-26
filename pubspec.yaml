@@ -28,4 +28,4 @@ flutter:
   fonts:
     - family: Nexus
       fonts:
-        - asset: fonts/NexusSerif.ttf
+        - asset: assets/fonts/NexusSerif.ttf

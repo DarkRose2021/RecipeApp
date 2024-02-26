@@ -7,6 +7,8 @@ void main() {
   runApp(const MyApp());
 }
 
+enum AccountItems { profile, settings, logout }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -41,7 +43,7 @@ class Splash2 extends StatelessWidget {
   }
 }
 
-Drawer appDraw() {
+Drawer appDraw(context) {
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
@@ -59,21 +61,30 @@ Drawer appDraw() {
           leading: const Icon(Icons.favorite),
           title: const Text('Favorites'),
           onTap: () {
-            print('Favorites Clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.add_circle_rounded),
-          title: const Text('Add Recipe'),
+          title: const Text('Add Recipes'),
           onTap: () {
-            print('Add Recipe Clicked');
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.bookmark),
           title: const Text('Saved Recipes'),
           onTap: () {
-            print('Saved Recipes Clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
@@ -82,7 +93,10 @@ Drawer appDraw() {
           ),
           title: const Text('Your Recipes'),
           onTap: () {
-            print('Your Recipes Clicked');
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
@@ -91,28 +105,40 @@ Drawer appDraw() {
           ),
           title: const Text('Your Meal Plans'),
           onTap: () {
-            print('Meal Plans Clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.add_circle_rounded),
           title: const Text('Create Meal Plans'),
           onTap: () {
-            print('Create Meal Plans Clicked');
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.shopping_cart_outlined),
           title: const Text('Shopping Lists'),
           onTap: () {
-            print('Shopping Lists Clicked');
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.settings),
           title: const Text('Settings'),
           onTap: () {
-            print('Settings Clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+            );
           },
         ),
       ],
@@ -120,7 +146,7 @@ Drawer appDraw() {
   );
 }
 
-BottomNavigationBar appNav({int index = 0}) {
+BottomNavigationBar appNav(int index, context) {
   return BottomNavigationBar(
     currentIndex: index,
     items: const <BottomNavigationBarItem>[
@@ -139,33 +165,202 @@ BottomNavigationBar appNav({int index = 0}) {
         label: 'Saved Recipes',
       ),
     ],
+    onTap: (index) => {
+      if (index == 0)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MainApp()),
+          )
+        }
+      else if (index == 1)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AllRecipes()),
+          )
+        }
+      else if (index == 2)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SavedRecipes()),
+          )
+        }
+    },
   );
 }
 
-AppBar bar() {
-  const profileButton = Padding(
-    padding: EdgeInsets.all(8.0),
-    child: Icon(
-      Icons.person_rounded,
-      size: 40,
-    ),
-  );
+AppBar bar(String title, profileBtn) {
   return AppBar(
     centerTitle: true,
-    title: const Text('Recipe App'),
-    actions: const [profileButton],
+    title: Text(title),
+    actions: [profileBtn],
   );
 }
 
-class MainApp extends StatelessWidget {
+Divider hr() {
+  return const Divider(
+    height: 20,
+    thickness: 3,
+    color: Color(0xFFADD3CF),
+  );
+}
+
+Container recipeCard(String imagePath, String name) {
+  return Container(
+    margin: const EdgeInsets.all(8),
+    padding: const EdgeInsets.all(0),
+    height: 150,
+    width: 390,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: Colors.grey.shade200),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 1.5,
+          blurRadius: 2,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Stack(
+      children: [
+        ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(6),
+            topRight: Radius.circular(6),
+          ),
+          child: Image.asset(
+            imagePath,
+            width: 390,
+            height: 65,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          left: 15,
+          bottom: 35,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(),
+              const Row(
+                children: [
+                  ImageIcon(
+                    AssetImage('assets/icons/forkFilled.png'),
+                  ),
+                  ImageIcon(
+                    AssetImage('assets/icons/fork.png'),
+                  ),
+                  ImageIcon(
+                    AssetImage('assets/icons/fork.png'),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
+
+  @override
+  State<MainApp> createState() => _MainApp();
+}
+
+class AllRecipes extends StatefulWidget {
+  const AllRecipes({Key? key}) : super(key: key);
+
+  @override
+  State<AllRecipes> createState() => _AllRecipes();
+}
+
+class SavedRecipes extends StatefulWidget {
+  const SavedRecipes({Key? key}) : super(key: key);
+
+  @override
+  State<SavedRecipes> createState() => _SavedRecipes();
+}
+
+class _MainApp extends State<MainApp> {
+  Padding profileButton() {
+    AccountItems? selectedItem;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      // child: Icon(
+      //   Icons.person_rounded,
+      //   size: 40,
+      child: MenuAnchor(
+        builder:
+            (BuildContext context, MenuController controller, Widget? child) {
+          return IconButton(
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: const Icon(
+              Icons.person_rounded,
+              size: 40,
+            ),
+            tooltip: 'Show menu',
+          );
+        },
+        menuChildren: List<MenuItemButton>.generate(
+          3,
+          (index) {
+            dynamic onPress = '';
+            String label = '';
+            switch (index) {
+              case 0:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Profile';
+                break;
+              case 1:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Settings';
+                break;
+              case 2:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Logout';
+                break;
+            }
+
+            return MenuItemButton(
+              onPressed: onPress,
+              child: Text(label),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar(),
+        appBar: bar('Recipe App', profileButton()),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -190,11 +385,7 @@ class MainApp extends StatelessWidget {
                   ),
                 ),
               ),
-              const Divider(
-                height: 20,
-                thickness: 3,
-                color: Color.fromARGB(255, 173, 211, 207),
-              ),
+              hr(),
               SingleChildScrollView(
                 // scrollDirection: Axis.horizontal,
                 child: GridView.count(
@@ -349,11 +540,7 @@ class MainApp extends StatelessWidget {
                   ],
                 ),
               ),
-              const Divider(
-                height: 20,
-                thickness: 3,
-                color: Color.fromARGB(255, 173, 211, 207),
-              ),
+              hr(),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
@@ -374,72 +561,8 @@ class MainApp extends StatelessWidget {
                   children: List.generate(
                     3,
                     (index) {
-                      return Container(
-                        margin: const EdgeInsets.all(8),
-                        padding: const EdgeInsets.all(0),
-                        height: 150,
-                        width: 390,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: Colors.grey.shade200),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1.5,
-                              blurRadius: 2,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(6),
-                                topRight: Radius.circular(6),
-                              ),
-                              child: Image.asset(
-                                'assets/images/tempRecipeImg.jpg',
-                                width: 390,
-                                height: 65,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const Positioned(
-                              left: 15,
-                              bottom: 35,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Pepperoni Grilled Cheese',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(),
-                                  Row(
-                                    children: [
-                                      ImageIcon(
-                                        AssetImage(
-                                            'assets/icons/forkFilled.png'),
-                                      ),
-                                      ImageIcon(
-                                        AssetImage('assets/icons/fork.png'),
-                                      ),
-                                      ImageIcon(
-                                        AssetImage('assets/icons/fork.png'),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                      return recipeCard('assets/images/tempRecipeImg.jpg',
+                          'Pepperoni Grilled Cheese');
                     },
                   ),
                 ),
@@ -447,7 +570,7 @@ class MainApp extends StatelessWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.only(),
+                  padding: const EdgeInsets.only(bottom: 20),
                   // ignore: avoid_print
                   child: ButtonTheme(
                     minWidth: 100.0,
@@ -455,7 +578,8 @@ class MainApp extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AllRecipes()),
+                          MaterialPageRoute(
+                              builder: (context) => const AllRecipes()),
                         );
                       },
                       style: ButtonStyle(
@@ -483,27 +607,236 @@ class MainApp extends StatelessWidget {
             ],
           ),
         ),
-        drawer: appDraw(),
-        bottomNavigationBar: appNav(),
+        drawer: appDraw(context),
+        bottomNavigationBar: appNav(0, context),
       ),
       theme: customTheme,
     );
   }
 }
 
-class AllRecipes extends StatelessWidget {
+class _AllRecipes extends State<AllRecipes> {
+  Padding profileButton() {
+    AccountItems? selectedItem;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MenuAnchor(
+        builder:
+            (BuildContext context, MenuController controller, Widget? child) {
+          return IconButton(
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: const Icon(
+              Icons.person_rounded,
+              size: 40,
+            ),
+            tooltip: 'Show menu',
+          );
+        },
+        menuChildren: List<MenuItemButton>.generate(
+          3,
+          (index) {
+            dynamic onPress = '';
+            String label = '';
+            switch (index) {
+              case 0:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Profile';
+                break;
+              case 1:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Settings';
+                break;
+              case 2:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Logout';
+                break;
+            }
+
+            return MenuItemButton(
+              onPressed: onPress,
+              child: Text(label),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar(),
+        appBar: bar('All Recipes', profileButton()),
         body: SingleChildScrollView(
-          
+          child: Column(
+            children: [
+              const Padding(
+                padding:
+                    EdgeInsets.only(top: 20, bottom: 10, left: 5, right: 5),
+                child: SearchBar(
+                  hintText: 'Search Recipes',
+                  leading: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              const ImageIcon(AssetImage('assets/icons/recipe.png')),
+              const ImageIcon(AssetImage('assets/icons/recipe.png')),
+              const ImageIcon(AssetImage('assets/icons/recipe.png')),
+              const ImageIcon(AssetImage('assets/icons/recipe.png')),
+              const ImageIcon(AssetImage('assets/icons/recipe.png')),
+              SvgPicture.asset(
+                                'assets/icons/recipe.png',
+                                width: 40.0,
+                              ),
+            ],
+            
+          ),
         ),
-        drawer: appDraw(),
-        bottomNavigationBar: appNav(),
+        drawer: appDraw(context),
+        bottomNavigationBar: appNav(1, context),
       ),
       theme: customTheme,
     );
   }
+}
+
+class _SavedRecipes extends State<SavedRecipes> {
+  Padding profileButton() {
+    AccountItems? selectedItem;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MenuAnchor(
+        builder:
+            (BuildContext context, MenuController controller, Widget? child) {
+          return IconButton(
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: const Icon(
+              Icons.person_rounded,
+              size: 40,
+            ),
+            tooltip: 'Show menu',
+          );
+        },
+        menuChildren: List<MenuItemButton>.generate(
+          3,
+          (index) {
+            dynamic onPress = '';
+            String label = '';
+            switch (index) {
+              case 0:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Profile';
+                break;
+              case 1:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Settings';
+                break;
+              case 2:
+                onPress = () =>
+                    setState(() => selectedItem = AccountItems.values[index]);
+                label = 'Logout';
+                break;
+            }
+
+            return MenuItemButton(
+              onPressed: onPress,
+              child: Text(label),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: bar('Saved Recipes', profileButton()),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+            ],
+          ),
+        ),
+        drawer: appDraw(context),
+        bottomNavigationBar: appNav(1, context),
+      ),
+      theme: customTheme,
+    );
+  }
+}
+
+class Login extends StatelessWidget{
+  const Login({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const Material(
+      child: Scaffold(
+        body: Column(
+          children: [
+            TextField(
+              obscureText: false,
+              decoration: InputDecoration(
+                labelText: 'Email'
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password'
+              ),
+            ),
+            
+          ],
+        ),
+      )
+    );
+  }
+  
 }

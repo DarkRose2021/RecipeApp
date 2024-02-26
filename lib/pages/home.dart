@@ -22,9 +22,6 @@ class _MainApp extends State<MainApp> {
     AccountItems? selectedItem;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      // child: Icon(
-      //   Icons.person_rounded,
-      //   size: 40,
       child: MenuAnchor(
         builder:
             (BuildContext context, MenuController controller, Widget? child) {

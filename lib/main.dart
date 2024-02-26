@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:splash_screen_view/SplashScreenView.dart';
+import 'package:easy_splash_screen/easy_splash_screen.dart';
+// import 'package:mongo_dart/mongo_dart.dart';
 
-void main() {
+Future<void> main () async {
+  await dotenv.load(fileName: 'lib/.env' );
   runApp(const MyApp());
 }
-
+// dotenv.env['VAR_NAME'];
 enum AccountItems { profile, settings, logout }
 
 class MyApp extends StatelessWidget {
@@ -14,31 +17,42 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  const MaterialApp(
       title: 'Splash Screen',
-      home: Splash2(),
+      home: SplashPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class Splash2 extends StatelessWidget {
-  const Splash2({super.key});
+class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
   Widget build(BuildContext context) {
-    return SplashScreenView(
-      navigateRoute: const Login(),
-      duration: 3000,
-      imageSize: 130,
-      imageSrc: 'assets/images/logo.png',
-      text: 'Recipe App',
-      textType: TextType.TyperAnimatedText,
-      textStyle: const TextStyle(
-        fontSize: 30.0,
-        color: Colors.white,
+    return EasySplashScreen(
+      logo: Image.asset('assets/images/logo.png'),
+      title: const Text(
+        'Recipe App',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white
+        ),
       ),
-      backgroundColor: Colors.teal,
+      backgroundImage: const AssetImage('assets/images/light-background.png'),
+      showLoader: true,
+      loadingText: const Text('Loading...', style: TextStyle(
+          color: Colors.white
+        ),),
+      navigator: const MainApp(),
+      durationInSeconds: 5,
     );
   }
 }

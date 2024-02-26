@@ -28,7 +28,7 @@ class Splash2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SplashScreenView(
-      navigateRoute: const MainApp(),
+      navigateRoute: const Login(),
       duration: 3000,
       imageSize: 130,
       imageSrc: 'assets/images/logo.png',
@@ -71,7 +71,7 @@ Drawer appDraw(context) {
           leading: const Icon(Icons.add_circle_rounded),
           title: const Text('Add Recipes'),
           onTap: () {
-             Navigator.push(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SavedRecipes()),
             );
@@ -93,7 +93,7 @@ Drawer appDraw(context) {
           ),
           title: const Text('Your Recipes'),
           onTap: () {
-             Navigator.push(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SavedRecipes()),
             );
@@ -115,7 +115,7 @@ Drawer appDraw(context) {
           leading: const Icon(Icons.add_circle_rounded),
           title: const Text('Create Meal Plans'),
           onTap: () {
-             Navigator.push(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SavedRecipes()),
             );
@@ -125,7 +125,7 @@ Drawer appDraw(context) {
           leading: const Icon(Icons.shopping_cart_outlined),
           title: const Text('Shopping Lists'),
           onTap: () {
-             Navigator.push(
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const SavedRecipes()),
             );
@@ -294,6 +294,13 @@ class SavedRecipes extends StatefulWidget {
 
   @override
   State<SavedRecipes> createState() => _SavedRecipes();
+}
+
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _Login();
 }
 
 class _MainApp extends State<MainApp> {
@@ -709,11 +716,10 @@ class _AllRecipes extends State<AllRecipes> {
               const ImageIcon(AssetImage('assets/icons/recipe.png')),
               const ImageIcon(AssetImage('assets/icons/recipe.png')),
               SvgPicture.asset(
-                                'assets/icons/recipe.png',
-                                width: 40.0,
-                              ),
+                'assets/icons/recipe.png',
+                width: 40.0,
+              ),
             ],
-            
           ),
         ),
         drawer: appDraw(context),
@@ -812,31 +818,90 @@ class _SavedRecipes extends State<SavedRecipes> {
   }
 }
 
-class Login extends StatelessWidget{
-  const Login({super.key});
+class _Login extends State<Login> {
   @override
   Widget build(BuildContext context) {
-    return const Material(
+    return Material(
       child: Scaffold(
-        body: Column(
-          children: [
-            TextField(
-              obscureText: false,
-              decoration: InputDecoration(
-                labelText: 'Email'
-              ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 150, left: 10, right: 10),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 200,
+                ),
+                const Text(
+                  'Login',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextField(
+                    obscureText: false,
+                    cursorColor: Colors.teal,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: MaterialStateTextStyle.resolveWith(
+                          (Set<MaterialState> states) {
+                        final Color color =
+                            states.contains(MaterialState.focused)
+                                ? Colors.teal
+                                : Colors.black;
+                        return TextStyle(color: color);
+                      }),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.teal),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextField(
+                    obscureText: true,
+                    cursorColor: Colors.teal,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: MaterialStateTextStyle.resolveWith(
+                          (Set<MaterialState> states) {
+                        final Color color =
+                            states.contains(MaterialState.focused)
+                                ? Colors.teal
+                                : Colors.black;
+                        return TextStyle(color: color);
+                      }),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.teal),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: TextButton(
+                    onPressed: () => {print('Button Pressed')},
+                    style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.teal),
+                        foregroundColor: MaterialStatePropertyAll(Colors.white),
+                        minimumSize: MaterialStatePropertyAll(Size(200, 25))),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password'
-              ),
-            ),
-            
-          ],
+          ),
         ),
-      )
+      ),
     );
   }
-  
 }

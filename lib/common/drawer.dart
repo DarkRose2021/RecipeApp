@@ -6,13 +6,35 @@ Drawer appDraw(context) {
     child: ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
-        const DrawerHeader(
-          decoration: BoxDecoration(
-            color: Colors.teal,
+        DrawerHeader(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF009688),
+                Color(0xFF80CBC4),
+              ],
+              stops: [0.5, 1.0],
+            ),
           ),
-          child: Text(
-            'Recipe App',
-            style: TextStyle(color: Colors.white),
+          child: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                      text: 'Neu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
           ),
         ),
         ListTile(

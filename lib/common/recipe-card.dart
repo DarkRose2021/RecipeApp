@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 Container recipeCard(String imagePath, String name) {
   return Container(
     margin: const EdgeInsets.all(8),
@@ -44,13 +43,27 @@ Container recipeCard(String imagePath, String name) {
               Text(
                 name,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: Colors.teal,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Nexus',
+                  fontSize: 18,
                 ),
               ),
-              const SizedBox(height: 3,),
+              const SizedBox(
+                height: 3,
+              ),
               Row(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Text(
+                      'Difficulty (Random): ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nexus',
+                      ),
+                    ),
+                  ),
                   SvgPicture.asset(
                     'assets/icons/forkFilled.svg',
                     width: 30.0,

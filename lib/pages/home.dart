@@ -7,6 +7,7 @@ import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/pages/all-recipes.dart';
 import 'package:recipe_app/theme.dart';
+
 enum AccountItems { profile, settings, logout }
 
 class MainApp extends StatefulWidget {
@@ -78,7 +79,28 @@ class _MainApp extends State<MainApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('Recipe App', profileButton()),
+        appBar: AppBar(
+          centerTitle: true,
+          title: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                      text: 'Neu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
+          ),
+          actions: [profileButton()],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[

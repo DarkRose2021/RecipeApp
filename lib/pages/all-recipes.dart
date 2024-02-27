@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/theme.dart';
+// import 'package:http/http.dart' as http;
 
 class AllRecipes extends StatefulWidget {
   const AllRecipes({super.key});
@@ -118,7 +118,7 @@ class _AllRecipes extends State<AllRecipes> {
     );
   }
 
-   List<Widget> filteredRecipeCards() {
+  List<Widget> filteredRecipeCards() {
     String searchTerm = query.toLowerCase();
 
     List<String> filteredRecipeNames = allRecipeNames
@@ -126,7 +126,8 @@ class _AllRecipes extends State<AllRecipes> {
         .toList();
 
     List<Widget> filteredCards = filteredRecipeNames
-        .map((recipeName) => recipeCard('assets/images/tempRecipeImg.jpg', recipeName))
+        .map((recipeName) =>
+            recipeCard('assets/images/tempRecipeImg.jpg', recipeName))
         .toList();
 
     return filteredCards;

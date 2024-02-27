@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/pages/home.dart';
+// import 'package:recipe_app/pages/home.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:recipe_app/pages/view_recipe.dart';
 
 main() {
   runApp(const MyApp());
@@ -33,9 +34,12 @@ class _SplashPageState extends State<SplashPage> {
     return EasySplashScreen(
       logo: Image.asset('assets/images/logo.png'),
       title: const Text(
-        'Recipe App',
+        'NeuFoods',
         style: TextStyle(
-            fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
       backgroundImage: const AssetImage('assets/images/light-background.png'),
       showLoader: true,
@@ -43,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
         'Loading...',
         style: TextStyle(color: Colors.white),
       ),
-      navigator: const MainApp(),
+      navigator: const Recipe(),
       durationInSeconds: 5,
     );
   }

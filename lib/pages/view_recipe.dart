@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/common/app-bar.dart';
-import 'package:recipe_app/common/bottom-nav.dart';
-import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe-card.dart';
-import 'package:recipe_app/theme.dart';
 
 class Recipe extends StatefulWidget {
   const Recipe({super.key});
 
   @override
   State<Recipe> createState() => _Recipe();
+}
+
+Padding dishTypes(String type) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(2),
+        ),
+      ),
+      child: Text(type),
+    ),
+  );
 }
 
 class _Recipe extends State<Recipe> {
@@ -44,9 +54,12 @@ class _Recipe extends State<Recipe> {
                     ),
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
-                    
+                    ListView.builder(
+                      itemCount: 3,
+                      itemBuilder: (context, index) => dishTypes('test'),
+                    )
                   ],
                 ),
                 const Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:recipe_app/pages/home.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:recipe_app/pages/home.dart';
+import 'package:recipe_app/pages/login.dart';
 import 'package:recipe_app/pages/view_recipe.dart';
 
 main() {

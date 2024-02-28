@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recipe_app/pages/home.dart';
 import 'package:recipe_app/pages/login.dart';
 import 'package:recipe_app/pages/view_recipe.dart';
 
-main() {
-  runApp(const MyApp());
+void main() async {
+  await dotenv.load();
+  print('Loaded .env successfully');
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

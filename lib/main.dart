@@ -8,7 +8,7 @@ import 'package:recipe_app/pages/view_recipe.dart';
 void main() async {
   await dotenv.load();
   print('Loaded .env successfully');
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -51,7 +51,7 @@ class _SplashPageState extends State<SplashPage> {
         'Loading...',
         style: TextStyle(color: Colors.white),
       ),
-      navigator: const Recipe(),
+      navigator: const Recipe(id: 652834),
       durationInSeconds: 5,
     );
   }

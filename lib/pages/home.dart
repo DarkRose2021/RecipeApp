@@ -293,19 +293,19 @@ class _MainApp extends State<MainApp> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 500,
-                width: 390,
-                child: Column(
-                  children: List.generate(
-                    3,
-                    (index) {
-                      return recipeCard('assets/images/tempRecipeImg.jpg',
-                          'Pepperoni Grilled Cheese');
-                    },
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   height: 500,
+              //   width: 390,
+              //   child: Column(
+              //     children: List.generate(
+              //       3,
+              //       (index) {
+              //         return recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg',
+              //             'Pepperoni Grilled Cheese');
+              //       },
+              //     ),
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(

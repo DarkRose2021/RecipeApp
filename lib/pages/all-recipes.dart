@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/theme.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
 
 class AllRecipes extends StatefulWidget {
   const AllRecipes({super.key});
@@ -18,13 +20,43 @@ enum AccountItems { profile, settings, logout }
 class _AllRecipes extends State<AllRecipes> {
   String query = '';
   TextEditingController searchController = TextEditingController();
-  List<String> allRecipeNames = [
-    'Pizza',
-    'Burger',
-    'Pie',
-    'Cake',
-    'Bread',
-  ];
+  Map<String, dynamic> recipeData = {};
+
+  Future<void> fetchRecipeData() async {
+    await dotenv.load();
+
+    final String accessToken = dotenv.env['API_KEY'] ?? '';
+    final Uri uri =
+        Uri.parse('https://api.spoonacular.com/recipes/random?number=10');
+    final Map<String, String> headers = {
+      'x-api-key': accessToken,
+    };
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        recipeData = parseRecipeData(response.body);
+      });
+    } else {
+      print('Failed to fetch recipe data. Status code: ${response.statusCode}');
+    }
+  }
+
+  Map<String, dynamic> parseRecipeData(String responseBody) {
+    try {
+      return json.decode(responseBody);
+    } catch (e) {
+      print('Error parsing recipe data: $e');
+      return {}; // Return an empty map in case of parsing error
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRecipeData();
+  }
 
   Padding profileButton() {
     // ignore: unused_local_variable
@@ -84,6 +116,8 @@ class _AllRecipes extends State<AllRecipes> {
 
   @override
   Widget build(BuildContext context) {
+    print('built');
+    // print(recipeData);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -107,7 +141,19 @@ class _AllRecipes extends State<AllRecipes> {
                       });
                     }),
               ),
-              ...filteredRecipeCards(),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: recipeData['recipes'].length,
+                itemBuilder: (context, index) {
+                  return recipeCard(
+                    context,
+                    recipeData['recipes'][index]['id'],
+                    recipeData['recipes'][index]['image'],
+                    recipeData['recipes'][index]['title'],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -116,20 +162,5 @@ class _AllRecipes extends State<AllRecipes> {
       ),
       theme: customTheme,
     );
-  }
-
-  List<Widget> filteredRecipeCards() {
-    String searchTerm = query.toLowerCase();
-
-    List<String> filteredRecipeNames = allRecipeNames
-        .where((recipeName) => recipeName.toLowerCase().contains(searchTerm))
-        .toList();
-
-    List<Widget> filteredCards = filteredRecipeNames
-        .map((recipeName) =>
-            recipeCard('assets/images/tempRecipeImg.jpg', recipeName))
-        .toList();
-
-    return filteredCards;
   }
 }

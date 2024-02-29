@@ -5,8 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class Recipe extends StatefulWidget {
-  const Recipe({Key? key}) : super(key: key);
-
+  const Recipe({super.key, required this.id});
+  final int id;
   @override
   State<Recipe> createState() => _Recipe();
 }
@@ -45,8 +45,8 @@ class _Recipe extends State<Recipe> {
     await dotenv.load();
 
     final String accessToken = dotenv.env['API_KEY'] ?? '';
-    final Uri uri =
-        Uri.parse('https://api.spoonacular.com/recipes/644848/information');
+    final Uri uri = Uri.parse(
+        'https://api.spoonacular.com/recipes/${widget.id}/information');
     final Map<String, String> headers = {
       'x-api-key': accessToken,
     };
@@ -87,31 +87,58 @@ class _Recipe extends State<Recipe> {
         body: SingleChildScrollView(
           child: Padding(
             padding:
-                const EdgeInsets.only(top: 50, right: 10, left: 10, bottom: 10),
+                const EdgeInsets.only(top: 55, right: 10, left: 10, bottom: 10),
             child: recipeData.isEmpty
-                ? const Column(
+                ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Error loading recipe data.',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.red,
+                      BackButton(
+                        onPressed: () => Navigator.pop(context),
+                        color: Colors.black,
+                      ),
+                      const Center(
+                        child: Text(
+                          'Error loading recipe data.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     ],
                   )
                 : Column(
                     children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: BackButton(
+                          onPressed: () => Navigator.pop(context),
+                          color: Colors.black,
+                        ),
+                      ),
                       Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(right: 20, left: 10),
-                            child: Image.network(
-                              recipeData['image'] ?? '',
-                              width: 180,
-                            ),
-                          ),
+                              padding:
+                                  const EdgeInsets.only(right: 20, left: 10),
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                width: 190,
+                                decoration: BoxDecoration(
+                                    color: Colors.teal,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: SizedBox.fromSize(
+                                    size: const Size.fromRadius(
+                                        48), // Image radius
+                                    child: Image.network(
+                                      recipeData['image'] ?? '',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              )),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
@@ -133,8 +160,8 @@ class _Recipe extends State<Recipe> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
                             children: [
                               for (var dishType
                                   in (recipeData['dishTypes'] ?? []))
@@ -148,7 +175,7 @@ class _Recipe extends State<Recipe> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Ingredients:',
+                            'Ingredients',
                             style: TextStyle(
                               fontSize: 24,
                               fontFamily: 'Nexus',
@@ -180,7 +207,7 @@ class _Recipe extends State<Recipe> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Directions:',
+                            'Directions',
                             style: TextStyle(
                               fontSize: 24,
                               fontFamily: 'Nexus',

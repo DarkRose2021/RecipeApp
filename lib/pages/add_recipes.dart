@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/theme.dart';
@@ -15,7 +14,7 @@ class AddRecipes extends StatefulWidget {
 enum AccountItems { profile, settings, logout }
 
 class _AddRecipes extends State<AddRecipes> {
-    bool isDarkMode = false;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -34,6 +33,7 @@ class _AddRecipes extends State<AddRecipes> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', value);
   }
+
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -125,15 +125,13 @@ class _AddRecipes extends State<AddRecipes> {
                 });
                 saveDarkModePreference(value);
               },
-              activeColor: Colors.teal, 
+              activeColor: Colors.teal,
             ),
           ],
         ),
         body: SingleChildScrollView(
           child: Column(
-            children: [
-              
-            ],
+            children: [],
           ),
         ),
         drawer: appDraw(context),

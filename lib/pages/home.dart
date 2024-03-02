@@ -128,7 +128,7 @@ class _MainApp extends State<MainApp> {
                 });
                 saveDarkModePreference(value);
               },
-              activeColor: Colors.teal, 
+              activeColor: Colors.teal,
             ),
           ],
         ),
@@ -142,7 +142,7 @@ class _MainApp extends State<MainApp> {
                   child: RichText(
                     text: TextSpan(
                         style: TextStyle(
-                          color:  isDarkMode ? Colors.white : Colors.black,
+                          color: isDarkMode ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),

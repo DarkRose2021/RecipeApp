@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
@@ -19,7 +18,7 @@ class AllRecipes extends StatefulWidget {
 enum AccountItems { profile, settings, logout }
 
 class _AllRecipes extends State<AllRecipes> {
-    bool isDarkMode = false;
+  bool isDarkMode = false;
 
   void loadDarkModePreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,6 +31,7 @@ class _AllRecipes extends State<AllRecipes> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', value);
   }
+
   String query = '';
   TextEditingController searchController = TextEditingController();
   Map<String, dynamic> recipeData = {};
@@ -180,7 +180,7 @@ class _AllRecipes extends State<AllRecipes> {
                 });
                 saveDarkModePreference(value);
               },
-              activeColor: Colors.teal, 
+              activeColor: Colors.teal,
             ),
           ],
         ),
@@ -193,7 +193,7 @@ class _AllRecipes extends State<AllRecipes> {
                 child: SearchBar(
                   hintText: 'Search Recipes',
                   controller: searchController,
-                  leading:  Icon(
+                  leading: Icon(
                     Icons.search,
                     color: isDarkMode ? Colors.grey : Colors.black,
                   ),
@@ -209,7 +209,10 @@ class _AllRecipes extends State<AllRecipes> {
                   ? const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Center(child: CircularProgressIndicator( color: Colors.teal,)),
+                        Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.teal,
+                        )),
                       ],
                     )
                   : ListView.builder(
@@ -218,12 +221,11 @@ class _AllRecipes extends State<AllRecipes> {
                       itemCount: recipeData['recipes'].length,
                       itemBuilder: (context, index) {
                         return recipeCard(
-                          context,
-                          recipeData['recipes'][index]['id'],
-                          recipeData['recipes'][index]['image'],
-                          recipeData['recipes'][index]['title'],
-                          isDarkMode
-                        );
+                            context,
+                            recipeData['recipes'][index]['id'],
+                            recipeData['recipes'][index]['image'],
+                            recipeData['recipes'][index]['title'],
+                            isDarkMode);
                       },
                     ),
             ],

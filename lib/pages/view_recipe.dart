@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class Recipe extends StatefulWidget {
-  const Recipe({super.key, required this.id, required this.isDarkMode} );
+  const Recipe({super.key, required this.id, required this.isDarkMode});
   final int id;
   final bool isDarkMode;
   @override
@@ -21,7 +21,9 @@ Padding dishTypes(String type, bool isDarkMode) {
         color: const Color(0xFF80CBC4),
         boxShadow: [
           BoxShadow(
-            color: isDarkMode ? Colors.grey.shade800.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
+            color: isDarkMode
+                ? Colors.grey.shade800.withOpacity(0.5)
+                : Colors.grey.withOpacity(0.5),
             spreadRadius: 1.5,
             blurRadius: 2,
             offset: const Offset(0, 3),
@@ -40,13 +42,12 @@ Padding dishTypes(String type, bool isDarkMode) {
   );
 }
 
-
 class _Recipe extends State<Recipe> {
   RegExp htmlTagExp = RegExp(r'<[^>]+>');
   RegExp exp = RegExp(r'(?<=<li>).+?(?=</li>)');
   List<String?> instructionsList = [];
   Map<String, dynamic> recipeData = {};
-  
+
   Future<void> fetchRecipeData() async {
     await dotenv.load();
 
@@ -106,7 +107,7 @@ class _Recipe extends State<Recipe> {
                     children: [
                       BackButton(
                         onPressed: () => Navigator.pop(context),
-                        color: widget.isDarkMode? Colors.white : Colors.black,
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
                       ),
                       const Center(
                           child: CircularProgressIndicator(
@@ -120,7 +121,8 @@ class _Recipe extends State<Recipe> {
                         alignment: Alignment.topLeft,
                         child: BackButton(
                           onPressed: () => Navigator.pop(context),
-                          color: widget.isDarkMode? Colors.white : Colors.black,  
+                          color:
+                              widget.isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
                       Column(
@@ -172,7 +174,8 @@ class _Recipe extends State<Recipe> {
                             children: [
                               for (var dishType
                                   in (recipeData['dishTypes'] ?? []))
-                                dishTypes(dishType.toString(), widget.isDarkMode),
+                                dishTypes(
+                                    dishType.toString(), widget.isDarkMode),
                             ],
                           ),
                         ),

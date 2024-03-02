@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_app/pages/add_recipes.dart';
 import 'package:recipe_app/pages/saved-recipes.dart';
 
 Drawer appDraw(context) {
@@ -53,7 +54,7 @@ Drawer appDraw(context) {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SavedRecipes()),
+              MaterialPageRoute(builder: (context) => const AddRecipes()),
             );
           },
         ),

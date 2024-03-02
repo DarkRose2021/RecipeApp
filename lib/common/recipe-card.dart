@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/pages/view_recipe.dart';
 
 GestureDetector recipeCard(
-    dynamic context, int recipeId, String imagePath, String name) {
+    dynamic context, int recipeId, String imagePath, String name, bool darkMode) {
   int randomNum = Random().nextInt(5) + 1;
   return GestureDetector(
     onTap: () => {
@@ -13,6 +13,7 @@ GestureDetector recipeCard(
         MaterialPageRoute(
           builder: (context) => Recipe(
             id: recipeId,
+            isDarkMode: darkMode,
           ),
         ),
       )
@@ -24,11 +25,11 @@ GestureDetector recipeCard(
       width: 390,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.grey.shade200),
-        color: Colors.white,
+        border: Border.all(color: darkMode? Colors.grey.shade900 : Colors.grey.shade800),
+        color: darkMode? Colors.grey.shade900 : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color:  darkMode ? Colors.grey.shade800.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
             spreadRadius: 1.5,
             blurRadius: 2,
             offset: const Offset(0, 3),
@@ -69,13 +70,14 @@ GestureDetector recipeCard(
                 ),
                 Row(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 10),
+                     Padding(
+                      padding: const EdgeInsets.only(right: 10),
                       child: Text(
                         'Difficulty (Random): ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Nexus',
+                          color: darkMode ? Colors.grey.shade300 : Colors.black,
                         ),
                       ),
                     ),

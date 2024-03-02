@@ -5,13 +5,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class Recipe extends StatefulWidget {
-  const Recipe({super.key, required this.id});
+  const Recipe({super.key, required this.id, required this.isDarkMode} );
   final int id;
+  final bool isDarkMode;
   @override
   State<Recipe> createState() => _Recipe();
 }
 
-Padding dishTypes(String type) {
+Padding dishTypes(String type, bool isDarkMode) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Container(
@@ -20,7 +21,7 @@ Padding dishTypes(String type) {
         color: const Color(0xFF80CBC4),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: isDarkMode ? Colors.grey.shade800.withOpacity(0.5) : Colors.grey.withOpacity(0.5),
             spreadRadius: 1.5,
             blurRadius: 2,
             offset: const Offset(0, 3),
@@ -31,17 +32,21 @@ Padding dishTypes(String type) {
           Radius.circular(2),
         ),
       ),
-      child: Text(type),
+      child: Text(
+        type,
+        style: TextStyle(color: Colors.black),
+      ),
     ),
   );
 }
 
+
 class _Recipe extends State<Recipe> {
-    RegExp htmlTagExp = RegExp(r'<[^>]+>');
+  RegExp htmlTagExp = RegExp(r'<[^>]+>');
   RegExp exp = RegExp(r'(?<=<li>).+?(?=</li>)');
   List<String?> instructionsList = [];
   Map<String, dynamic> recipeData = {};
-
+  
   Future<void> fetchRecipeData() async {
     await dotenv.load();
 
@@ -57,15 +62,16 @@ class _Recipe extends State<Recipe> {
     if (response.statusCode == 200) {
       setState(() {
         recipeData = parseRecipeData(response.body);
-         if (recipeData['instructions'] != null && htmlTagExp.hasMatch(recipeData['instructions'])) {
-        Iterable<RegExpMatch> matches =
-            exp.allMatches(recipeData['instructions'] ?? '');
-        instructionsList = matches.map((match) => match[0]).toList();
-      } else {
-        // If no HTML tags, add the entire instruction string to instructionsList
-        instructionsList = [recipeData['instructions'] ?? ''];
-      }
-    });
+        if (recipeData['instructions'] != null &&
+            htmlTagExp.hasMatch(recipeData['instructions'])) {
+          Iterable<RegExpMatch> matches =
+              exp.allMatches(recipeData['instructions'] ?? '');
+          instructionsList = matches.map((match) => match[0]).toList();
+        } else {
+          // If no HTML tags, add the entire instruction string to instructionsList
+          instructionsList = [recipeData['instructions'] ?? ''];
+        }
+      });
     } else {
       print('Failed to fetch recipe data. Status code: ${response.statusCode}');
     }
@@ -100,9 +106,12 @@ class _Recipe extends State<Recipe> {
                     children: [
                       BackButton(
                         onPressed: () => Navigator.pop(context),
-                        color: Colors.black,
+                        color: widget.isDarkMode? Colors.white : Colors.black,
                       ),
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.teal,
+                      )),
                     ],
                   )
                 : Column(
@@ -111,7 +120,7 @@ class _Recipe extends State<Recipe> {
                         alignment: Alignment.topLeft,
                         child: BackButton(
                           onPressed: () => Navigator.pop(context),
-                          color: Colors.black,
+                          color: widget.isDarkMode? Colors.white : Colors.black,  
                         ),
                       ),
                       Column(
@@ -163,7 +172,7 @@ class _Recipe extends State<Recipe> {
                             children: [
                               for (var dishType
                                   in (recipeData['dishTypes'] ?? []))
-                                dishTypes(dishType.toString()),
+                                dishTypes(dishType.toString(), widget.isDarkMode),
                             ],
                           ),
                         ),

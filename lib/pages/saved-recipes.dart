@@ -95,18 +95,51 @@ class _SavedRecipes extends State<SavedRecipes> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('Saved Recipes', profileButton()),
+        appBar: AppBar(
+          centerTitle: true,
+          title: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                      text: 'Neu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
+          ),
+          actions: [
+            // profileButton(),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  isDarkMode = value;
+                });
+                saveDarkModePreference(value);
+              },
+              activeColor: Colors.teal, 
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
             ],
           ),
         ),

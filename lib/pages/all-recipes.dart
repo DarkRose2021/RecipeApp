@@ -150,7 +150,40 @@ class _AllRecipes extends State<AllRecipes> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('All Recipes', profileButton()),
+        appBar: AppBar(
+          centerTitle: true,
+          title: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                      text: 'Neu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
+          ),
+          actions: [
+            // profileButton(),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  isDarkMode = value;
+                });
+                saveDarkModePreference(value);
+              },
+              activeColor: Colors.teal, 
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -160,9 +193,9 @@ class _AllRecipes extends State<AllRecipes> {
                 child: SearchBar(
                   hintText: 'Search Recipes',
                   controller: searchController,
-                  leading: const Icon(
+                  leading:  Icon(
                     Icons.search,
-                    color: Colors.black,
+                    color: isDarkMode ? Colors.grey : Colors.black,
                   ),
                   onSubmitted: (value) {
                     setState(() {
@@ -176,7 +209,7 @@ class _AllRecipes extends State<AllRecipes> {
                   ? const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Center(child: CircularProgressIndicator()),
+                        Center(child: CircularProgressIndicator( color: Colors.teal,)),
                       ],
                     )
                   : ListView.builder(
@@ -189,6 +222,7 @@ class _AllRecipes extends State<AllRecipes> {
                           recipeData['recipes'][index]['id'],
                           recipeData['recipes'][index]['image'],
                           recipeData['recipes'][index]['title'],
+                          isDarkMode
                         );
                       },
                     ),

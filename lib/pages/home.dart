@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/divider.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/pages/all-recipes.dart';
 import 'package:recipe_app/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum AccountItems { profile, settings, logout }
 
@@ -17,6 +17,26 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainApp extends State<MainApp> {
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDarkModePreference();
+  }
+
+  void loadDarkModePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('darkMode') ?? false;
+    });
+  }
+
+  void saveDarkModePreference(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+  }
+
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -98,7 +118,19 @@ class _MainApp extends State<MainApp> {
                   ),
                 ]),
           ),
-          actions: [profileButton()],
+          actions: [
+            // profileButton(),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  isDarkMode = value;
+                });
+                saveDarkModePreference(value);
+              },
+              activeColor: Colors.teal, 
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -108,13 +140,13 @@ class _MainApp extends State<MainApp> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
                   child: RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                         style: TextStyle(
-                          color: Colors.black,
+                          color:  isDarkMode ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
-                        children: [
+                        children: const [
                           TextSpan(text: 'Welcome back, '),
                           TextSpan(
                               text: '[Name]',
@@ -349,7 +381,7 @@ class _MainApp extends State<MainApp> {
         drawer: appDraw(context),
         bottomNavigationBar: appNav(0, context),
       ),
-      theme: customTheme,
+      theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
 }

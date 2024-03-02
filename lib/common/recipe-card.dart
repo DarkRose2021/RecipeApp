@@ -1,9 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/pages/view_recipe.dart';
 
 GestureDetector recipeCard(
     dynamic context, int recipeId, String imagePath, String name) {
+  int randomNum = Random().nextInt(5) + 1;
   return GestureDetector(
     onTap: () => {
       Navigator.push(
@@ -77,18 +79,14 @@ GestureDetector recipeCard(
                         ),
                       ),
                     ),
-                    SvgPicture.asset(
-                      'assets/icons/forkFilled.svg',
-                      width: 30.0,
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons/forkFilled.svg',
-                      width: 30.0,
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons/fork.svg',
-                      width: 30.0,
-                    ),
+                    // Generate filled or unfilled fork icons based on randomNum
+                    for (int i = 0; i < 5; i++)
+                      SvgPicture.asset(
+                        i < randomNum
+                            ? 'assets/icons/forkFilled.svg'
+                            : 'assets/icons/fork.svg',
+                        width: 30.0,
+                      ),
                   ],
                 )
               ],

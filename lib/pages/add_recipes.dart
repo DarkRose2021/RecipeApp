@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-enum AccountItems { profile, settings, logout }
 
-class SavedRecipes extends StatefulWidget {
-  const SavedRecipes({Key? key}) : super(key: key);
+class AddRecipes extends StatefulWidget {
+  const AddRecipes({super.key});
 
   @override
-  State<SavedRecipes> createState() => _SavedRecipes();
+  State<AddRecipes> createState() => _AddRecipes();
 }
 
-class _SavedRecipes extends State<SavedRecipes> {
+enum AccountItems { profile, settings, logout }
+
+class _AddRecipes extends State<AddRecipes> {
     bool isDarkMode = false;
 
   @override
@@ -95,18 +95,11 @@ class _SavedRecipes extends State<SavedRecipes> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('Saved Recipes', profileButton()),
+        appBar: bar('All Recipes', profileButton()),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
-              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name'),
+              
             ],
           ),
         ),

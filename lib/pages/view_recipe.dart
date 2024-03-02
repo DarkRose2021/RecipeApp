@@ -37,6 +37,7 @@ Padding dishTypes(String type) {
 }
 
 class _Recipe extends State<Recipe> {
+    RegExp htmlTagExp = RegExp(r'<[^>]+>');
   RegExp exp = RegExp(r'(?<=<li>).+?(?=</li>)');
   List<String?> instructionsList = [];
   Map<String, dynamic> recipeData = {};
@@ -56,10 +57,15 @@ class _Recipe extends State<Recipe> {
     if (response.statusCode == 200) {
       setState(() {
         recipeData = parseRecipeData(response.body);
+         if (recipeData['instructions'] != null && htmlTagExp.hasMatch(recipeData['instructions'])) {
         Iterable<RegExpMatch> matches =
-            exp.allMatches(recipeData['instructions']);
+            exp.allMatches(recipeData['instructions'] ?? '');
         instructionsList = matches.map((match) => match[0]).toList();
-      });
+      } else {
+        // If no HTML tags, add the entire instruction string to instructionsList
+        instructionsList = [recipeData['instructions'] ?? ''];
+      }
+    });
     } else {
       print('Failed to fetch recipe data. Status code: ${response.statusCode}');
     }
@@ -96,15 +102,7 @@ class _Recipe extends State<Recipe> {
                         onPressed: () => Navigator.pop(context),
                         color: Colors.black,
                       ),
-                      const Center(
-                        child: Text(
-                          'Error loading recipe data.',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
+                      const Center(child: CircularProgressIndicator()),
                     ],
                   )
                 : Column(
@@ -116,14 +114,14 @@ class _Recipe extends State<Recipe> {
                           color: Colors.black,
                         ),
                       ),
-                      Row(
+                      Column(
                         children: [
                           Padding(
                               padding:
                                   const EdgeInsets.only(right: 20, left: 10),
                               child: Container(
                                 padding: const EdgeInsets.all(2),
-                                width: 190,
+                                width: 220,
                                 decoration: BoxDecoration(
                                     color: Colors.teal,
                                     borderRadius: BorderRadius.circular(15)),
@@ -139,7 +137,7 @@ class _Recipe extends State<Recipe> {
                                   ),
                                 ),
                               )),
-                          Expanded(
+                          Center(
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: Align(

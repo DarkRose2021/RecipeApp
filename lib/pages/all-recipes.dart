@@ -7,6 +7,7 @@ import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllRecipes extends StatefulWidget {
   const AllRecipes({super.key});
@@ -18,16 +19,36 @@ class AllRecipes extends StatefulWidget {
 enum AccountItems { profile, settings, logout }
 
 class _AllRecipes extends State<AllRecipes> {
+    bool isDarkMode = false;
+
+  void loadDarkModePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('darkMode') ?? false;
+    });
+  }
+
+  void saveDarkModePreference(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+  }
   String query = '';
   TextEditingController searchController = TextEditingController();
   Map<String, dynamic> recipeData = {};
 
-  Future<void> fetchRecipeData() async {
+  Future<void> _searchRecipes(String? query) async {
     await dotenv.load();
 
     final String accessToken = dotenv.env['API_KEY'] ?? '';
-    final Uri uri =
-        Uri.parse('https://api.spoonacular.com/recipes/random?number=10');
+    Uri uri;
+
+    if (query != null && query.isNotEmpty) {
+      uri = Uri.parse(
+          'https://api.spoonacular.com/recipes/findByIngredients?ingredients=$query');
+    } else {
+      uri = Uri.parse('https://api.spoonacular.com/recipes/random?number=10');
+    }
+
     final Map<String, String> headers = {
       'x-api-key': accessToken,
     };
@@ -45,17 +66,27 @@ class _AllRecipes extends State<AllRecipes> {
 
   Map<String, dynamic> parseRecipeData(String responseBody) {
     try {
-      return json.decode(responseBody);
+      final dynamic decoded = json.decode(responseBody);
+
+      if (decoded is List) {
+        return {'recipes': decoded};
+      } else if (decoded is Map<String, dynamic>) {
+        return decoded;
+      } else {
+        print('Unexpected response format: $decoded');
+        return {};
+      }
     } catch (e) {
       print('Error parsing recipe data: $e');
-      return {}; // Return an empty map in case of parsing error
+      return {};
     }
   }
 
   @override
   void initState() {
     super.initState();
-    fetchRecipeData();
+    loadDarkModePreference();
+    _searchRecipes(null);
   }
 
   Padding profileButton() {
@@ -116,8 +147,6 @@ class _AllRecipes extends State<AllRecipes> {
 
   @override
   Widget build(BuildContext context) {
-    print('built');
-    // print(recipeData);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -129,38 +158,47 @@ class _AllRecipes extends State<AllRecipes> {
                 padding: const EdgeInsets.only(
                     top: 20, bottom: 10, left: 5, right: 5),
                 child: SearchBar(
-                    hintText: 'Search Recipes',
-                    controller: searchController,
-                    leading: const Icon(
-                      Icons.search,
-                      color: Colors.black,
+                  hintText: 'Search Recipes',
+                  controller: searchController,
+                  leading: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  onSubmitted: (value) {
+                    setState(() {
+                      query = value;
+                    });
+                    _searchRecipes(query);
+                  },
+                ),
+              ),
+              recipeData.isEmpty
+                  ? const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: recipeData['recipes'].length,
+                      itemBuilder: (context, index) {
+                        return recipeCard(
+                          context,
+                          recipeData['recipes'][index]['id'],
+                          recipeData['recipes'][index]['image'],
+                          recipeData['recipes'][index]['title'],
+                        );
+                      },
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        query = value;
-                      });
-                    }),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: recipeData['recipes'].length,
-                itemBuilder: (context, index) {
-                  return recipeCard(
-                    context,
-                    recipeData['recipes'][index]['id'],
-                    recipeData['recipes'][index]['image'],
-                    recipeData['recipes'][index]['title'],
-                  );
-                },
-              ),
             ],
           ),
         ),
         drawer: appDraw(context),
         bottomNavigationBar: appNav(1, context),
       ),
-      theme: customTheme,
+      theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
 }

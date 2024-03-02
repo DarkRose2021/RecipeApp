@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum AccountItems { profile, settings, logout }
 
 class MainApp extends StatefulWidget {
-  const MainApp({Key? key}) : super(key: key);
+  const MainApp({super.key});
 
   @override
   State<MainApp> createState() => _MainApp();
@@ -203,10 +203,14 @@ class _MainApp extends State<MainApp> {
                           margin: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
+                            color: isDarkMode
+                                ? Colors.grey.shade900
+                                : Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
+                                color: isDarkMode
+                                    ? Colors.grey.shade800.withOpacity(0.5)
+                                    : Colors.grey.withOpacity(0.5),
                                 spreadRadius: 1,
                                 blurRadius: 2,
                                 offset: const Offset(3, 3),
@@ -241,18 +245,25 @@ class _MainApp extends State<MainApp> {
                 width: 390,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF009688),
-                        Color(0xFF80CBC4),
-                      ],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
+                  gradient: LinearGradient(
+                      colors: isDarkMode
+                          ? [
+                              const Color(0xFF015C53),
+                              const Color(0xFF009688),
+                            ]
+                          : [
+                              const Color(0xFF009688),
+                              const Color(0xFF80CBC4),
+                            ],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(1.0, 0.0),
+                      stops: const [0.0, 1.0],
                       tileMode: TileMode.clamp),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: isDarkMode
+                          ? Colors.grey.shade800.withOpacity(0.5)
+                          : Colors.grey.withOpacity(0.5),
                       spreadRadius: 1.5,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -356,8 +367,11 @@ class _MainApp extends State<MainApp> {
                       style: ButtonStyle(
                         foregroundColor:
                             MaterialStateProperty.all<Color>(Colors.teal),
-                        backgroundColor:
-                            MaterialStateProperty.all(const Color(0xFFEEEEEE)),
+                        backgroundColor: isDarkMode
+                            ? MaterialStateProperty.all<Color>(
+                                Colors.grey.shade900)
+                            : MaterialStateProperty.all(
+                                const Color(0xFFEEEEEE)),
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),

@@ -112,7 +112,7 @@ class _MainApp extends State<MainApp> {
                       text: 'Neu',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                      )),
+                      ),),
                   TextSpan(
                     text: 'Foods',
                   ),
@@ -156,7 +156,7 @@ class _MainApp extends State<MainApp> {
                   ),
                 ),
               ),
-              hr(),
+              hr(isDarkMode),
               SingleChildScrollView(
                 // scrollDirection: Axis.horizontal,
                 child: GridView.count(
@@ -322,7 +322,7 @@ class _MainApp extends State<MainApp> {
                   ],
                 ),
               ),
-              hr(),
+              hr(isDarkMode),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(

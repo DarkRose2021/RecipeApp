@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
@@ -8,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum AccountItems { profile, settings, logout }
 
 class SavedRecipes extends StatefulWidget {
-  const SavedRecipes({Key? key}) : super(key: key);
+  const SavedRecipes({super.key});
 
   @override
   State<SavedRecipes> createState() => _SavedRecipes();

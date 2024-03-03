@@ -36,7 +36,7 @@ Padding dishTypes(String type, bool isDarkMode) {
       ),
       child: Text(
         type,
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black),
       ),
     ),
   );
@@ -69,7 +69,6 @@ class _Recipe extends State<Recipe> {
               exp.allMatches(recipeData['instructions'] ?? '');
           instructionsList = matches.map((match) => match[0]).toList();
         } else {
-          // If no HTML tags, add the entire instruction string to instructionsList
           instructionsList = [recipeData['instructions'] ?? ''];
         }
       });

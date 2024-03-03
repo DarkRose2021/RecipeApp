@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scan/scan.dart';
+import 'package:http/http.dart' as http;
 
 class AddRecipes extends StatefulWidget {
   const AddRecipes({super.key});
@@ -16,6 +19,7 @@ enum AccountItems { profile, settings, logout }
 class _AddRecipes extends State<AddRecipes> {
   ScanController controller = ScanController();
   var _scanResult = '';
+  List<String> scanResults = [];
   bool isDarkMode = false;
 
   @override
@@ -75,16 +79,20 @@ class _AddRecipes extends State<AddRecipes> {
             ),
           ],
         ),
-        body: Center(
+        body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'You Barcode Contains the Text:',
-              ),
-              Text(
-                _scanResult,
-                style: Theme.of(context).textTheme.headlineMedium,
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: scanResults
+                      .map((title) => Text(
+                            title,
+                            style: const TextStyle(fontSize: 24),
+                          ))
+                      .toList(),
+                ),
               ),
             ],
           ),
@@ -109,7 +117,7 @@ class _AddRecipes extends State<AddRecipes> {
       theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
-  
+
   _showBarcodeScanner() {
     return showModalBottomSheet(
       isScrollControlled: true,
@@ -126,13 +134,17 @@ class _AddRecipes extends State<AddRecipes> {
       },
     );
   }
+
   AppBar _buildBarcodeScannerAppBar() {
     return AppBar(
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(4.0),
         child: Container(color: Colors.tealAccent, height: 4.0),
       ),
-      title: const Text('Scan Your Barcode'),
+      title: Text('Scan Your Barcode',
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : Colors.black,
+          ),),
       elevation: 0.0,
       backgroundColor: const Color(0xFF333333),
       leading: GestureDetector(
@@ -145,14 +157,17 @@ class _AddRecipes extends State<AddRecipes> {
       ),
       actions: [
         Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(right: 16.0),
-            child: GestureDetector(
-                onTap: () => controller.toggleTorchMode(),
-                child: const Icon(Icons.flashlight_on))),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(right: 16.0),
+          child: GestureDetector(
+            onTap: () => controller.toggleTorchMode(),
+            child: const Icon(Icons.flashlight_on, color: Color(0xFF80CBC4),),
+          ),
+        ),
       ],
     );
   }
+
   Widget _buildBarcodeScannerBody() {
     return SizedBox(
       height: 400,
@@ -164,9 +179,39 @@ class _AddRecipes extends State<AddRecipes> {
           setState(() {
             _scanResult = data;
             Navigator.of(context).pop();
+            _sendBarcodeDataToAPI(data);
           });
         },
       ),
     );
+  }
+
+  _sendBarcodeDataToAPI(String barcodeData) async {
+    await dotenv.load();
+    final String apiKey = dotenv.env['API_KEY'] ?? '';
+    final Uri uri =
+        Uri.parse('https://api.spoonacular.com/food/products/upc/$barcodeData');
+    final Map<String, String> headers = {
+      'x-api-key': apiKey,
+    };
+
+    try {
+      final response = await http.get(uri, headers: headers);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        String productTitle = responseData['title'];
+        setState(() {
+          scanResults.add(productTitle);
+        });
+      } else {
+        // Handle the error case
+        print('Error: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
   }
 }

@@ -26,7 +26,7 @@ GestureDetector recipeCard(dynamic context, int recipeId, String imagePath,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-            color: darkMode ? Colors.grey.shade900 : Colors.grey.shade800),
+            color: darkMode ? Colors.grey.shade900 : Colors.grey.shade300),
         color: darkMode ? Colors.grey.shade900 : Colors.white,
         boxShadow: [
           BoxShadow(

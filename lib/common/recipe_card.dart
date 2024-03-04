@@ -85,10 +85,16 @@ GestureDetector recipeCard(dynamic context, int recipeId, String imagePath,
                       ),
                     ),
                     for (int i = 0; i < 5; i++)
+                    darkMode? Image.asset(
+                      i < randomNum
+                            ?  'assets/icons/forkFilleddm.png'
+                            :  'assets/icons/forkdm.png',
+                        width: 30.0,
+                    ) :
                       SvgPicture.asset(
                         i < randomNum
-                            ? darkMode? 'assets/icons/forkFilled_dm.svg' : 'assets/icons/forkFilled.svg'
-                            : darkMode? 'assets/icons/fork_dm.svg' : 'assets/icons/fork.svg',
+                            ?  'assets/icons/forkFilled.svg'
+                            :  'assets/icons/fork.svg',
                         width: 30.0,
                       ),
                   ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe-card.dart';
+import 'package:recipe_app/common/recipe_card.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 enum AccountItems { profile, settings, logout }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/pages/add_recipes.dart';
-import 'package:recipe_app/pages/barcode_scanner.dart';
-import 'package:recipe_app/pages/saved_recipes.dart';
-import 'package:recipe_app/pages/search_recipes.dart';
 
 Drawer appDraw(context) {
   return Drawer(

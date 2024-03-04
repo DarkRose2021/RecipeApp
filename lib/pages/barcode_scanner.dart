@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:recipe_app/common/bottom-nav.dart';
-import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scan/scan.dart';
@@ -18,6 +16,7 @@ enum AccountItems { profile, settings, logout }
 
 class _BarcodeScanner extends State<BarcodeScanner> {
   ScanController controller = ScanController();
+  // ignore: unused_field
   var _scanResult = '';
   List<String> scanResults = [];
   bool isDarkMode = false;

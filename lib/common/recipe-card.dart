@@ -84,12 +84,11 @@ GestureDetector recipeCard(dynamic context, int recipeId, String imagePath,
                         ),
                       ),
                     ),
-                    // Generate filled or unfilled fork icons based on randomNum
                     for (int i = 0; i < 5; i++)
                       SvgPicture.asset(
                         i < randomNum
-                            ? 'assets/icons/forkFilled.svg'
-                            : 'assets/icons/fork.svg',
+                            ? darkMode? 'assets/icons/forkFilled_dm.svg' : 'assets/icons/forkFilled.svg'
+                            : darkMode? 'assets/icons/fork_dm.svg' : 'assets/icons/fork.svg',
                         width: 30.0,
                       ),
                   ],

@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/divider.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/pages/all-recipes.dart';
+import 'package:recipe_app/pages/search_recipes.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,10 +109,11 @@ class _MainApp extends State<MainApp> {
                 ),
                 children: [
                   TextSpan(
-                      text: 'Neu',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),),
+                    text: 'Neu',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   TextSpan(
                     text: 'Foods',
                   ),
@@ -196,9 +197,20 @@ class _MainApp extends State<MainApp> {
                       }
 
                       return GestureDetector(
-                        onTap: () {
-                          print('Box $index clicked');
-                        },
+                        onTap: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Error'),
+                            content: const Text(
+                                "This action currently doesn't do anything"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                         child: Container(
                           margin: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
@@ -296,9 +308,21 @@ class _MainApp extends State<MainApp> {
                         child: ButtonTheme(
                           minWidth: 100.0,
                           child: OutlinedButton(
-                            onPressed: () {
-                              print('Create Meal Plan Button Clicked');
-                            },
+                            onPressed: () => showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Error'),
+                                content: const Text(
+                                    "This action currently doesn't do anything"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            ),
                             style: ButtonStyle(
                               foregroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white),

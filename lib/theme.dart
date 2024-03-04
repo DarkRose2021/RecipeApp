@@ -14,11 +14,14 @@ final ThemeData darkTheme = ThemeData(
     titleTextStyle: TextStyle(fontSize: 32, color: Colors.teal),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.black54,
     selectedItemColor: Colors.teal,
     unselectedItemColor: Colors.grey,
   ),
-  // colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+  colorScheme: const ColorScheme.dark(
+    primary: Colors.teal,
+    secondary: Colors.tealAccent,
+  ),
 );
 
 final ThemeData lightTheme = ThemeData(

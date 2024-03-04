@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/divider.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe-card.dart';
-import 'package:recipe_app/pages/all-recipes.dart';
+import 'package:recipe_app/pages/search_recipes.dart';
 import 'package:recipe_app/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 enum AccountItems { profile, settings, logout }
 
 class MainApp extends StatefulWidget {
-  const MainApp({Key? key}) : super(key: key);
+  const MainApp({super.key});
 
   @override
   State<MainApp> createState() => _MainApp();
 }
 
 class _MainApp extends State<MainApp> {
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDarkModePreference();
+  }
+
+  void loadDarkModePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('darkMode') ?? false;
+    });
+  }
+
+  void saveDarkModePreference(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+  }
+
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -78,7 +98,41 @@ class _MainApp extends State<MainApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('Recipe App', profileButton()),
+        appBar: AppBar(
+          centerTitle: true,
+          title: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Neu',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
+          ),
+          actions: [
+            // profileButton(),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  isDarkMode = value;
+                });
+                saveDarkModePreference(value);
+              },
+              activeColor: Colors.teal,
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -87,13 +141,13 @@ class _MainApp extends State<MainApp> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
                   child: RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                         style: TextStyle(
-                          color: Colors.black,
+                          color: isDarkMode ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
-                        children: [
+                        children: const [
                           TextSpan(text: 'Welcome back, '),
                           TextSpan(
                               text: '[Name]',
@@ -103,7 +157,7 @@ class _MainApp extends State<MainApp> {
                   ),
                 ),
               ),
-              hr(),
+              hr(isDarkMode),
               SingleChildScrollView(
                 // scrollDirection: Axis.horizontal,
                 child: GridView.count(
@@ -143,17 +197,32 @@ class _MainApp extends State<MainApp> {
                       }
 
                       return GestureDetector(
-                        onTap: () {
-                          print('Box $index clicked');
-                        },
+                        onTap: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Error'),
+                            content: const Text(
+                                "This action currently doesn't do anything"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                         child: Container(
                           margin: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
+                            color: isDarkMode
+                                ? Colors.grey.shade900
+                                : Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
+                                color: isDarkMode
+                                    ? Colors.grey.shade800.withOpacity(0.5)
+                                    : Colors.grey.withOpacity(0.5),
                                 spreadRadius: 1,
                                 blurRadius: 2,
                                 offset: const Offset(3, 3),
@@ -188,18 +257,25 @@ class _MainApp extends State<MainApp> {
                 width: 390,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF009688),
-                        Color(0xFF80CBC4),
-                      ],
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
+                  gradient: LinearGradient(
+                      colors: isDarkMode
+                          ? [
+                              const Color(0xFF015C53),
+                              const Color(0xFF009688),
+                            ]
+                          : [
+                              const Color(0xFF009688),
+                              const Color(0xFF80CBC4),
+                            ],
+                      begin: const FractionalOffset(0.0, 0.0),
+                      end: const FractionalOffset(1.0, 0.0),
+                      stops: const [0.0, 1.0],
                       tileMode: TileMode.clamp),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: isDarkMode
+                          ? Colors.grey.shade800.withOpacity(0.5)
+                          : Colors.grey.withOpacity(0.5),
                       spreadRadius: 1.5,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -232,9 +308,21 @@ class _MainApp extends State<MainApp> {
                         child: ButtonTheme(
                           minWidth: 100.0,
                           child: OutlinedButton(
-                            onPressed: () {
-                              print('Create Meal Plan Button Clicked');
-                            },
+                            onPressed: () => showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Error'),
+                                content: const Text(
+                                    "This action currently doesn't do anything"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            ),
                             style: ButtonStyle(
                               foregroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white),
@@ -258,7 +346,7 @@ class _MainApp extends State<MainApp> {
                   ],
                 ),
               ),
-              hr(),
+              hr(isDarkMode),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
@@ -272,19 +360,19 @@ class _MainApp extends State<MainApp> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 500,
-                width: 390,
-                child: Column(
-                  children: List.generate(
-                    3,
-                    (index) {
-                      return recipeCard('assets/images/tempRecipeImg.jpg',
-                          'Pepperoni Grilled Cheese');
-                    },
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   height: 500,
+              //   width: 390,
+              //   child: Column(
+              //     children: List.generate(
+              //       3,
+              //       (index) {
+              //         return recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg',
+              //             'Pepperoni Grilled Cheese');
+              //       },
+              //     ),
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -303,8 +391,11 @@ class _MainApp extends State<MainApp> {
                       style: ButtonStyle(
                         foregroundColor:
                             MaterialStateProperty.all<Color>(Colors.teal),
-                        backgroundColor:
-                            MaterialStateProperty.all(const Color(0xFFEEEEEE)),
+                        backgroundColor: isDarkMode
+                            ? MaterialStateProperty.all<Color>(
+                                Colors.grey.shade900)
+                            : MaterialStateProperty.all(
+                                const Color(0xFFEEEEEE)),
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
@@ -328,7 +419,7 @@ class _MainApp extends State<MainApp> {
         drawer: appDraw(context),
         bottomNavigationBar: appNav(0, context),
       ),
-      theme: customTheme,
+      theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/pages/all-recipes.dart';
+import 'package:recipe_app/pages/search_recipes.dart';
 import 'package:recipe_app/pages/home.dart';
-import 'package:recipe_app/pages/saved-recipes.dart';
+import 'package:recipe_app/pages/saved_recipes.dart';
 
 BottomNavigationBar appNav(int index, context) {
   return BottomNavigationBar(

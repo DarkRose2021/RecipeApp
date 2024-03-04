@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_app/common/app-bar.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe-card.dart';
 import 'package:recipe_app/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 enum AccountItems { profile, settings, logout }
 
 class SavedRecipes extends StatefulWidget {
-  const SavedRecipes({Key? key}) : super(key: key);
+  const SavedRecipes({super.key});
 
   @override
   State<SavedRecipes> createState() => _SavedRecipes();
 }
 
 class _SavedRecipes extends State<SavedRecipes> {
+    bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDarkModePreference();
+  }
+
+  void loadDarkModePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('darkMode') ?? false;
+    });
+  }
+
+  void saveDarkModePreference(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+  }
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -75,29 +94,58 @@ class _SavedRecipes extends State<SavedRecipes> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: bar('Saved Recipes', profileButton()),
+        appBar: AppBar(
+          centerTitle: true,
+          title: RichText(
+            text: const TextSpan(
+                style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: 32,
+                  fontFamily: 'Nexus',
+                ),
+                children: [
+                  TextSpan(
+                      text: 'Neu',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  TextSpan(
+                    text: 'Foods',
+                  ),
+                ]),
+          ),
+          actions: [
+            // profileButton(),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                setState(() {
+                  isDarkMode = value;
+                });
+                saveDarkModePreference(value);
+              },
+              activeColor: Colors.teal, 
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
-              recipeCard('assets/images/tempRecipeImg.jpg', 'Recipe'),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
             ],
           ),
         ),
         drawer: appDraw(context),
         bottomNavigationBar: appNav(1, context),
       ),
-      theme: customTheme,
+      theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
 }

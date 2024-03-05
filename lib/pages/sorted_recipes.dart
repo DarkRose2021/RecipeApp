@@ -1,23 +1,21 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:recipe_app/common/bottom-nav.dart';
-import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/common/recipe_card.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SearchRecipes extends StatefulWidget {
-  const SearchRecipes({super.key});
-
+class SortRecipes extends StatefulWidget {
+  const SortRecipes({super.key, required this.type});
+  final String type;
   @override
-  State<SearchRecipes> createState() => _SearchRecipes();
+  State<SortRecipes> createState() => _SortRecipes();
 }
 
 enum AccountItems { profile, settings, logout }
 
-class _SearchRecipes extends State<SearchRecipes> {
+class _SortRecipes extends State<SortRecipes> {
   bool isDarkMode = false;
 
   void loadDarkModePreference() async {
@@ -32,7 +30,6 @@ class _SearchRecipes extends State<SearchRecipes> {
     prefs.setBool('darkMode', value);
   }
 
-  String query = '';
   TextEditingController searchController = TextEditingController();
   Map<String, dynamic> recipeData = {};
 
@@ -40,7 +37,8 @@ class _SearchRecipes extends State<SearchRecipes> {
     await dotenv.load();
 
     final String accessToken = dotenv.env['API_KEY'] ?? '';
-    Uri uri = Uri.parse('https://api.spoonacular.com/recipes/random?number=10');
+    Uri uri = Uri.parse(
+        'https://api.spoonacular.com/recipes/complexSearch?query=${widget.type}&number=10');
 
     final Map<String, String> headers = {
       'x-api-key': accessToken,
@@ -61,17 +59,15 @@ class _SearchRecipes extends State<SearchRecipes> {
     try {
       final dynamic decoded = json.decode(responseBody);
 
-      if (decoded is List) {
-        return {'recipes': decoded};
-      } else if (decoded is Map<String, dynamic>) {
+      if (decoded is Map<String, dynamic> && decoded.containsKey('results')) {
         return decoded;
       } else {
         print('Unexpected response format: $decoded');
-        return {};
+        return {'results': []};
       }
     } catch (e) {
       print('Error parsing recipe data: $e');
-      return {};
+      return {'results': []};
     }
   }
 
@@ -88,6 +84,10 @@ class _SearchRecipes extends State<SearchRecipes> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          leading: BackButton(
+            onPressed: () => Navigator.pop(context),
+            color: isDarkMode ? Colors.white : Colors.teal,
+          ),
           centerTitle: true,
           title: RichText(
             text: const TextSpan(
@@ -137,21 +137,22 @@ class _SearchRecipes extends State<SearchRecipes> {
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: recipeData['recipes'].length,
+                      itemCount:
+                          (recipeData['results'] as List<dynamic>?)?.length ??
+                              0,
                       itemBuilder: (context, index) {
                         return recipeCard(
-                            context,
-                            recipeData['recipes'][index]['id'],
-                            recipeData['recipes'][index]['image'],
-                            recipeData['recipes'][index]['title'],
-                            isDarkMode);
+                          context,
+                          recipeData['results']?[index]['id'],
+                          recipeData['results']?[index]['image'],
+                          recipeData['results']?[index]['title'],
+                          isDarkMode,
+                        );
                       },
                     ),
             ],
           ),
         ),
-        drawer: appDraw(context),
-        bottomNavigationBar: appNav(1, context),
       ),
       theme: isDarkMode ? darkTheme : lightTheme,
     );

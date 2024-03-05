@@ -214,12 +214,14 @@ class _AllRecipes extends State<AllRecipes> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.teal,
-                        )),
+                          child: CircularProgressIndicator(
+                            color: Colors.teal,
+                          ),
+                        ),
                       ],
                     )
-                  : error
+                  : (recipeData['recipes'] == null ||
+                          !(recipeData['recipes'] is List))
                       ? const Column(
                           children: [
                             Text(
@@ -234,14 +236,23 @@ class _AllRecipes extends State<AllRecipes> {
                       : ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: recipeData['recipes'].length,
+                          itemCount: (recipeData['recipes'] as List).length,
                           itemBuilder: (context, index) {
-                            return recipeCard(
+                            final recipe = recipeData['recipes'][index];
+
+                            if (recipe != null || recipe['title'] != null || recipe['image'] != null) {
+                              print(recipe['title']);
+                              return recipeCard(
                                 context,
-                                recipeData['recipes'][index]['id'],
-                                recipeData['recipes'][index]['image'],
-                                recipeData['recipes'][index]['title'],
-                                isDarkMode);
+                                recipe['id'],
+                                recipe['image'],
+                                recipe['title'].toString(),
+                                isDarkMode,
+                              );
+                            } else {
+                              return const Text(
+                                  'This recipe has an error while loading');
+                            }
                           },
                         ),
             ],

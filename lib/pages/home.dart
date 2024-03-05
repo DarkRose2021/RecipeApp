@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/divider.dart';
 import 'package:recipe_app/common/drawer.dart';
+import 'package:recipe_app/common/recipe_card.dart';
 import 'package:recipe_app/pages/search_recipes.dart';
+import 'package:recipe_app/pages/sorted_recipes.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,10 +24,54 @@ class MainApp extends StatefulWidget {
 class _MainApp extends State<MainApp> {
   bool isDarkMode = false;
 
+  Map<String, dynamic> recipeData = {};
+
+  Future<void> _searchRecipes() async {
+    await dotenv.load();
+
+    final String accessToken = dotenv.env['API_KEY'] ?? '';
+    Uri uri = Uri.parse(
+        'https://api.spoonacular.com/recipes/complexSearch?sort=popularity&sortDirection=asc&number=3');
+
+    final Map<String, String> headers = {
+      'x-api-key': accessToken,
+    };
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        recipeData = parseRecipeData(response.body);
+        print(recipeData);
+      });
+    } else {
+      print('Failed to fetch recipe data. Status code: ${response.statusCode}');
+    }
+  }
+
+  Map<String, dynamic> parseRecipeData(String responseBody) {
+    try {
+      final dynamic decoded = json.decode(responseBody);
+
+      if (decoded is List) {
+        return {'recipes': decoded};
+      } else if (decoded is Map<String, dynamic>) {
+        return decoded;
+      } else {
+        print('Unexpected response format: $decoded');
+        return {};
+      }
+    } catch (e) {
+      print('Error parsing recipe data: $e');
+      return {};
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     loadDarkModePreference();
+    _searchRecipes();
   }
 
   void loadDarkModePreference() async {
@@ -142,113 +191,43 @@ class _MainApp extends State<MainApp> {
                   padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
                   child: RichText(
                     text: TextSpan(
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                      children: const [
+                        TextSpan(text: 'Welcome back, '),
+                        TextSpan(
+                          text: '[Name]',
+                          style: TextStyle(color: Colors.teal),
                         ),
-                        children: const [
-                          TextSpan(text: 'Welcome back, '),
-                          TextSpan(
-                              text: '[Name]',
-                              style: TextStyle(color: Colors.teal)),
-                          TextSpan(text: '!'),
-                        ]),
+                        TextSpan(text: '!'),
+                      ],
+                    ),
                   ),
                 ),
               ),
               hr(isDarkMode),
-              SingleChildScrollView(
-                // scrollDirection: Axis.horizontal,
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  physics: const ScrollPhysics(),
-                  children: List.generate(
-                    6,
-                    (index) {
-                      String imagePath = '';
-                      String label = '';
-                      switch (index) {
-                        case 0:
-                          imagePath = 'assets/icons/fastFood.svg';
-                          label = 'Fast Food';
-                          break;
-                        case 1:
-                          imagePath = 'assets/icons/fruits.svg';
-                          label = 'Fruits';
-                          break;
-                        case 2:
-                          imagePath = 'assets/icons/mainDish.svg';
-                          label = 'Main Dish';
-                          break;
-                        case 3:
-                          imagePath = 'assets/icons/dessert.svg';
-                          label = 'Dessert';
-                          break;
-                        case 4:
-                          imagePath = 'assets/icons/vegetable.svg';
-                          label = 'Vegetables';
-                          break;
-                        case 5:
-                          imagePath = 'assets/icons/pasta.svg';
-                          label = 'Pasta';
-                          break;
-                      }
-
-                      return GestureDetector(
-                        onTap: () => showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: const Text('Error'),
-                            content: const Text(
-                                "This action currently doesn't do anything"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: isDarkMode
-                                ? Colors.grey.shade900
-                                : Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: isDarkMode
-                                    ? Colors.grey.shade800.withOpacity(0.5)
-                                    : Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 2,
-                                offset: const Offset(3, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                imagePath,
-                                width: 40.0,
-                              ),
-                              Text(
-                                label,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+              Row(
+                children: [
+                  topButtons(context, 'Bread', 'assets/icons/bread.svg',
+                      isDarkMode),
+                  topButtons(
+                      context, 'Breakfast', 'assets/icons/breakfast.svg', isDarkMode),
+                  topButtons(context, 'Main Dish', 'assets/icons/mainDish.svg',
+                      isDarkMode),
+                ],
+              ),
+              Row(
+                children: [
+                  topButtons(context, 'Dessert', 'assets/icons/dessert.svg',
+                      isDarkMode),
+                  topButtons(context, 'Soup',
+                      'assets/icons/soup.svg', isDarkMode),
+                  topButtons(
+                      context, 'Pasta', 'assets/icons/pasta.svg', isDarkMode),
+                ],
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10),
@@ -360,19 +339,29 @@ class _MainApp extends State<MainApp> {
                   ),
                 ),
               ),
-              // SizedBox(
-              //   height: 500,
-              //   width: 390,
-              //   child: Column(
-              //     children: List.generate(
-              //       3,
-              //       (index) {
-              //         return recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg',
-              //             'Pepperoni Grilled Cheese');
-              //       },
-              //     ),
-              //   ),
-              // ),
+              recipeData.isEmpty
+                  ? const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.teal,
+                        )),
+                      ],
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: recipeData['results'].length,
+                      itemBuilder: (context, index) {
+                        return recipeCard(
+                            context,
+                            recipeData['results'][index]['id'],
+                            recipeData['results'][index]['image'],
+                            recipeData['results'][index]['title'],
+                            isDarkMode);
+                      },
+                    ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -422,4 +411,53 @@ class _MainApp extends State<MainApp> {
       theme: isDarkMode ? darkTheme : lightTheme,
     );
   }
+}
+
+GestureDetector topButtons(
+    context, String label, String imagePath, bool isDarkMode) {
+  return GestureDetector(
+    onTap: () => {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SortRecipes(
+                  type: label,
+                )),
+      )
+    },
+    child: Container(
+      margin: const EdgeInsets.all(6),
+      width: 125,
+      height: 125,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: isDarkMode ? Colors.grey.shade900 : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: isDarkMode
+                ? Colors.grey.shade800.withOpacity(0.5)
+                : Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(3, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            imagePath,
+            width: 40.0,
+          ),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

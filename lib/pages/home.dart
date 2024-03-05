@@ -31,7 +31,7 @@ class _MainApp extends State<MainApp> {
 
     final String accessToken = dotenv.env['API_KEY'] ?? '';
     Uri uri = Uri.parse(
-        'https://api.spoonacular.com/recipes/popular');
+        'https://api.spoonacular.com/recipes/complexSearch?sort=popularity&sortDirection=asc&number=3');
 
     final Map<String, String> headers = {
       'x-api-key': accessToken,
@@ -42,6 +42,7 @@ class _MainApp extends State<MainApp> {
     if (response.statusCode == 200) {
       setState(() {
         recipeData = parseRecipeData(response.body);
+        print(recipeData);
       });
     } else {
       print('Failed to fetch recipe data. Status code: ${response.statusCode}');
@@ -190,28 +191,30 @@ class _MainApp extends State<MainApp> {
                   padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
                   child: RichText(
                     text: TextSpan(
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                      children: const [
+                        TextSpan(text: 'Welcome back, '),
+                        TextSpan(
+                          text: '[Name]',
+                          style: TextStyle(color: Colors.teal),
                         ),
-                        children: const [
-                          TextSpan(text: 'Welcome back, '),
-                          TextSpan(
-                              text: '[Name]',
-                              style: TextStyle(color: Colors.teal)),
-                          TextSpan(text: '!'),
-                        ]),
+                        TextSpan(text: '!'),
+                      ],
+                    ),
                   ),
                 ),
               ),
               hr(isDarkMode),
               Row(
                 children: [
-                  topButtons(context, 'Fast Food', 'assets/icons/fastFood.svg',
+                  topButtons(context, 'Bread', 'assets/icons/bread.svg',
                       isDarkMode),
                   topButtons(
-                      context, 'Fruits', 'assets/icons/fruits.svg', isDarkMode),
+                      context, 'Breakfast', 'assets/icons/breakfast.svg', isDarkMode),
                   topButtons(context, 'Main Dish', 'assets/icons/mainDish.svg',
                       isDarkMode),
                 ],
@@ -220,8 +223,8 @@ class _MainApp extends State<MainApp> {
                 children: [
                   topButtons(context, 'Dessert', 'assets/icons/dessert.svg',
                       isDarkMode),
-                  topButtons(context, 'Vegetables',
-                      'assets/icons/vegetable.svg', isDarkMode),
+                  topButtons(context, 'Soup',
+                      'assets/icons/soup.svg', isDarkMode),
                   topButtons(
                       context, 'Pasta', 'assets/icons/pasta.svg', isDarkMode),
                 ],
@@ -349,13 +352,13 @@ class _MainApp extends State<MainApp> {
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: recipeData['recipes'].length,
+                      itemCount: recipeData['results'].length,
                       itemBuilder: (context, index) {
                         return recipeCard(
                             context,
-                            recipeData['recipes'][index]['id'],
-                            recipeData['recipes'][index]['image'],
-                            recipeData['recipes'][index]['title'],
+                            recipeData['results'][index]['id'],
+                            recipeData['results'][index]['image'],
+                            recipeData['results'][index]['title'],
                             isDarkMode);
                       },
                     ),

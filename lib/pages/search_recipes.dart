@@ -240,7 +240,7 @@ class _AllRecipes extends State<AllRecipes> {
                           itemBuilder: (context, index) {
                             final recipe = recipeData['recipes'][index];
 
-                            if (recipe != null && recipe['title'] != null) {
+                            if (recipe != null || recipe['title'] != null || recipe['image'] != null) {
                               print(recipe['title']);
                               return recipeCard(
                                 context,

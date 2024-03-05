@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/common/bottom-nav.dart';
 import 'package:recipe_app/common/drawer.dart';
-import 'package:recipe_app/common/recipe_card.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 enum AccountItems { profile, settings, logout }
 
 class SavedRecipes extends StatefulWidget {
@@ -14,7 +14,7 @@ class SavedRecipes extends StatefulWidget {
 }
 
 class _SavedRecipes extends State<SavedRecipes> {
-    bool isDarkMode = false;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -33,6 +33,7 @@ class _SavedRecipes extends State<SavedRecipes> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('darkMode', value);
   }
+
   Padding profileButton() {
     // ignore: unused_local_variable
     AccountItems? selectedItem;
@@ -124,21 +125,23 @@ class _SavedRecipes extends State<SavedRecipes> {
                 });
                 saveDarkModePreference(value);
               },
-              activeColor: Colors.teal, 
+              activeColor: Colors.teal,
             ),
           ],
         ),
-        body: SingleChildScrollView(
+        body: const SingleChildScrollView(
           child: Column(
             children: [
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
-              // recipeCard(context, 644848, 'assets/images/tempRecipeImg.jpg', 'name', isDarkMode),
+              Center(
+                child: Text(
+                  'Page is currently a work in progress',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
+                ),
+              )
             ],
           ),
         ),

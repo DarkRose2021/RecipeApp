@@ -47,6 +47,7 @@ class _Recipe extends State<Recipe> {
   RegExp exp = RegExp(r'(?<=<li>).+?(?=</li>)');
   List<String?> instructionsList = [];
   Map<String, dynamic> recipeData = {};
+  bool isChecked = false;
 
   Future<void> fetchRecipeData() async {
     await dotenv.load();
@@ -196,18 +197,22 @@ class _Recipe extends State<Recipe> {
                         children: [
                           for (var ingredient
                               in (recipeData['extendedIngredients'] ?? []))
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10, top: 10),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  ingredient['original'] ?? '',
-                                  style: const TextStyle(
+                            CheckboxListTile(
+                              title: Text(
+                                ingredient['original'] ?? '',
+                                style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Nexus',
-                                  ),
-                                ),
+                                    decoration: isChecked
+                                        ? TextDecoration.lineThrough
+                                        : null),
                               ),
+                              value: isChecked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isChecked = value!;
+                                });
+                              },
                             ),
                         ],
                       ),

@@ -146,7 +146,7 @@ class _SavedRecipes extends State<SavedRecipes> {
           ),
         ),
         drawer: appDraw(context),
-        bottomNavigationBar: appNav(1, context),
+        bottomNavigationBar: appNav(2, context),
       ),
       theme: isDarkMode ? darkTheme : lightTheme,
     );

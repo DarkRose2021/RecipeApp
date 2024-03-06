@@ -239,19 +239,18 @@ class _AllRecipes extends State<AllRecipes> {
                           itemCount: (recipeData['recipes'] as List).length,
                           itemBuilder: (context, index) {
                             final recipe = recipeData['recipes'][index];
-
-                            if (recipe != null || recipe['title'] != null || recipe['image'] != null) {
-                              print(recipe['title']);
+                            if (recipe != null &&
+                                recipe['title'] != null &&
+                                recipe['image'] != null) {
                               return recipeCard(
                                 context,
                                 recipe['id'],
                                 recipe['image'],
-                                recipe['title'].toString(),
+                                recipe['title'],
                                 isDarkMode,
                               );
                             } else {
-                              return const Text(
-                                  'This recipe has an error while loading');
+                              return const Text('Error loading recipe');
                             }
                           },
                         ),

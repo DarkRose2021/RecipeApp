@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:recipe_app/common/bottom-nav.dart';
+import 'package:recipe_app/common/drawer.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scan/scan.dart';
@@ -183,7 +185,6 @@ class _BarcodeScanner extends State<BarcodeScanner> {
         scanLineColor: Colors.tealAccent,
         onCapture: (data) {
           setState(() {
-            _scanResult = data;
             Navigator.of(context).pop();
             _sendBarcodeDataToAPI(data);
           });

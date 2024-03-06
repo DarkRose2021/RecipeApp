@@ -42,7 +42,6 @@ class _MainApp extends State<MainApp> {
     if (response.statusCode == 200) {
       setState(() {
         recipeData = parseRecipeData(response.body);
-        print(recipeData);
       });
     } else {
       print('Failed to fetch recipe data. Status code: ${response.statusCode}');
@@ -283,7 +282,6 @@ class _MainApp extends State<MainApp> {
                       alignment: Alignment.bottomRight,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 20, right: 20),
-                        // ignore: avoid_print
                         child: ButtonTheme(
                           minWidth: 100.0,
                           child: OutlinedButton(
@@ -366,7 +364,6 @@ class _MainApp extends State<MainApp> {
                 alignment: Alignment.topCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 20),
-                  // ignore: avoid_print
                   child: ButtonTheme(
                     minWidth: 100.0,
                     child: ElevatedButton(

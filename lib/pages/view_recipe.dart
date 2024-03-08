@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:recipe_app/pages/sorted_recipes.dart';
 
 class Recipe extends StatefulWidget {
   const Recipe({super.key, required this.id, required this.isDarkMode});
@@ -12,31 +13,41 @@ class Recipe extends StatefulWidget {
   State<Recipe> createState() => _Recipe();
 }
 
-Padding dishTypes(String type, bool isDarkMode) {
+Padding dishTypes(context, String type, bool isDarkMode) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: Container(
-      padding: const EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF80CBC4),
-        boxShadow: [
-          BoxShadow(
-            color: isDarkMode
-                ? Colors.grey.shade800.withOpacity(0.5)
-                : Colors.grey.withOpacity(0.5),
-            spreadRadius: 1.5,
-            blurRadius: 2,
-            offset: const Offset(0, 3),
+    child: GestureDetector(
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SortRecipes(type: type),
           ),
-        ],
-        border: Border.all(),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(2),
         ),
-      ),
-      child: Text(
-        type,
-        style: const TextStyle(color: Colors.black),
+      },
+      child: Container(
+        padding: const EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFF80CBC4),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode
+                  ? Colors.grey.shade800.withOpacity(0.5)
+                  : Colors.grey.withOpacity(0.5),
+              spreadRadius: 1.5,
+              blurRadius: 2,
+              offset: const Offset(0, 3),
+            ),
+          ],
+          border: Border.all(),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(2),
+          ),
+        ),
+        child: Text(
+          type,
+          style: const TextStyle(color: Colors.black),
+        ),
       ),
     ),
   );
@@ -47,7 +58,9 @@ class _Recipe extends State<Recipe> {
   RegExp exp = RegExp(r'(?<=<li>).+?(?=</li>)');
   List<String?> instructionsList = [];
   Map<String, dynamic> recipeData = {};
+
   bool isChecked = false;
+  bool isFavorite = false;
 
   Future<void> fetchRecipeData() async {
     await dotenv.load();
@@ -87,6 +100,7 @@ class _Recipe extends State<Recipe> {
     }
   }
 
+  List<bool> ingredientCheckedList = [];
   @override
   void initState() {
     super.initState();
@@ -95,6 +109,19 @@ class _Recipe extends State<Recipe> {
 
   @override
   Widget build(BuildContext context) {
+    if (recipeData.isEmpty) {
+      return const CircularProgressIndicator(
+        color: Colors.teal,
+      );
+    }
+
+    if (ingredientCheckedList.isEmpty &&
+        recipeData['extendedIngredients'] != null) {
+      ingredientCheckedList = List.generate(
+        recipeData['extendedIngredients']!.length,
+        (index) => false,
+      );
+    }
     return Material(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -110,9 +137,10 @@ class _Recipe extends State<Recipe> {
                         color: widget.isDarkMode ? Colors.white : Colors.black,
                       ),
                       const Center(
-                          child: CircularProgressIndicator(
-                        color: Colors.teal,
-                      )),
+                        child: CircularProgressIndicator(
+                          color: Colors.teal,
+                        ),
+                      ),
                     ],
                   )
                 : Column(
@@ -174,10 +202,72 @@ class _Recipe extends State<Recipe> {
                             children: [
                               for (var dishType
                                   in (recipeData['dishTypes'] ?? []))
-                                dishTypes(
-                                    dishType.toString(), widget.isDarkMode),
+                                dishTypes(context, dishType.toString(),
+                                    widget.isDarkMode),
                             ],
                           ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 8),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFavorite = !isFavorite;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isFavorite ? Colors.red : null,
+                                        size: 25,
+                                      ),
+                                    ),
+                                    const Text(
+                                      'Save Recipe',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontFamily: 'Nexus',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: GestureDetector(
+                                child: const Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.shopping_cart,
+                                        size: 25,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Create Shopping List',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontFamily: 'Nexus',
+                                      ),
+                                      softWrap: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
                       const Padding(
@@ -195,24 +285,32 @@ class _Recipe extends State<Recipe> {
                       ),
                       Column(
                         children: [
-                          for (var ingredient
-                              in (recipeData['extendedIngredients'] ?? []))
+                          for (var index = 0;
+                              index <
+                                  (recipeData['extendedIngredients'] ?? [])
+                                      .length;
+                              index++)
                             CheckboxListTile(
                               title: Text(
-                                ingredient['original'] ?? '',
+                                recipeData['extendedIngredients'][index]
+                                        ['original'] ??
+                                    '',
+                                softWrap: true,
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Nexus',
-                                    decoration: isChecked
-                                        ? TextDecoration.lineThrough
-                                        : null),
+                                  fontSize: 16,
+                                  fontFamily: 'Nexus',
+                                  decoration: ingredientCheckedList[index]
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ),
                               ),
-                              value: isChecked,
+                              value: ingredientCheckedList[index],
                               onChanged: (bool? value) {
                                 setState(() {
-                                  isChecked = value!;
+                                  ingredientCheckedList[index] = value!;
                                 });
                               },
+                              controlAffinity: ListTileControlAffinity.leading,
                             ),
                         ],
                       ),

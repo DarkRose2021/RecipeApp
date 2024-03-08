@@ -210,10 +210,10 @@ class _MainApp extends State<MainApp> {
               hr(isDarkMode),
               Row(
                 children: [
-                  topButtons(context, 'Bread', 'assets/icons/bread.svg',
-                      isDarkMode),
                   topButtons(
-                      context, 'Breakfast', 'assets/icons/breakfast.svg', isDarkMode),
+                      context, 'Bread', 'assets/icons/bread.svg', isDarkMode),
+                  topButtons(context, 'Breakfast', 'assets/icons/breakfast.svg',
+                      isDarkMode),
                   topButtons(context, 'Main Dish', 'assets/icons/mainDish.svg',
                       isDarkMode),
                 ],
@@ -222,8 +222,8 @@ class _MainApp extends State<MainApp> {
                 children: [
                   topButtons(context, 'Dessert', 'assets/icons/dessert.svg',
                       isDarkMode),
-                  topButtons(context, 'Soup',
-                      'assets/icons/soup.svg', isDarkMode),
+                  topButtons(
+                      context, 'Soup', 'assets/icons/soup.svg', isDarkMode),
                   topButtons(
                       context, 'Pasta', 'assets/icons/pasta.svg', isDarkMode),
                 ],
@@ -371,7 +371,8 @@ class _MainApp extends State<MainApp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AllRecipes()),
+                            builder: (context) => const AllRecipes(),
+                          ),
                         );
                       },
                       style: ButtonStyle(
@@ -381,7 +382,8 @@ class _MainApp extends State<MainApp> {
                             ? MaterialStateProperty.all<Color>(
                                 Colors.grey.shade900)
                             : MaterialStateProperty.all(
-                                const Color(0xFFEEEEEE)),
+                                const Color(0xFFEEEEEE),
+                              ),
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
@@ -394,7 +396,7 @@ class _MainApp extends State<MainApp> {
                           const Size(390, 40),
                         ),
                       ),
-                      child: const Text('View all Recipes'),
+                      child: const Text('View Popular Recipes'),
                     ),
                   ),
                 ),

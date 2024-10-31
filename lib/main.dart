@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recipe_app/pages/home.dart';
+import 'package:recipe_app/pages/login.dart';
+import 'package:recipe_app/pages/signup.dart';
 
 void main() async {
   await dotenv.load();
@@ -49,7 +51,7 @@ class _SplashPageState extends State<SplashPage> {
         'Loading...',
         style: TextStyle(color: Colors.white),
       ),
-      navigator: const MainApp(),
+      navigator: const Signup(),
       durationInSeconds: 5,
     );
   }

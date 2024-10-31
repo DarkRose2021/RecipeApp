@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/pages/add_recipes.dart';
+import 'package:http/http.dart' as http;
 
 Drawer appDraw(context) {
+  const String backendUrl = 'http://192.168.1.8:5050/';
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
@@ -40,19 +42,61 @@ Drawer appDraw(context) {
         ListTile(
           leading: const Icon(Icons.favorite),
           title: const Text('Favorites'),
-          onTap: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Error'),
-              content: const Text("This action currently doesn't do anything"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'OK'),
-                  child: const Text('OK'),
+          onTap: () async {
+            // Make the HTTP request
+            try {
+              final response = await http.get(Uri.parse(backendUrl));
+
+              // Check if the request was successful
+              if (response.statusCode == 200) {
+                // Show the dialog with the response data
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Success'),
+                    content:
+                        Text(response.body), // Update with the actual response
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'OK'),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                // Show an error message if the request failed
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Error'),
+                    content: const Text('Failed to connect to the backend.'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'OK'),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            } catch (e) {
+              // Handle any errors that occur during the request
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Error'),
+                  content: Text('An error occurred: $e'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              );
+            }
+          },
         ),
         ListTile(
           leading: const Icon(Icons.add_circle_rounded),

@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:recipe_app/common/bottom-nav.dart';
-import 'package:recipe_app/common/drawer.dart';
+import 'package:recipe_app/common/dialouge-box.dart';
 import 'package:recipe_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scan/scan.dart';
@@ -19,7 +18,7 @@ enum AccountItems { profile, settings, logout }
 class _BarcodeScanner extends State<BarcodeScanner> {
   ScanController controller = ScanController();
   // ignore: unused_field
-  var _scanResult = '';
+  final _scanResult = '';
   List<String> scanResults = [];
   bool isDarkMode = false;
 
@@ -71,7 +70,6 @@ class _BarcodeScanner extends State<BarcodeScanner> {
                 ]),
           ),
           actions: [
-            // profileButton(),
             Switch(
               value: isDarkMode,
               onChanged: (value) {
@@ -86,7 +84,6 @@ class _BarcodeScanner extends State<BarcodeScanner> {
         ),
         body: SingleChildScrollView(
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(10),
@@ -213,12 +210,10 @@ class _BarcodeScanner extends State<BarcodeScanner> {
           scanResults.add(productTitle);
         });
       } else {
-        // Handle the error case
-        print('Error: ${response.statusCode}');
-        print('Response: ${response.body}');
+        showErrorDialog(context, 'Error: ${response.statusCode}', '${response.body}                Barcode not recognized. Please manually add the ingredient.');
       }
     } catch (error) {
-      print('Error: $error');
+      showErrorDialog(context, 'Error', '${error.toString()}          Barcode not recognized. Please manually add the ingredient.');
     }
   }
 }

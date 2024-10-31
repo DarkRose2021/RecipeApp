@@ -23,6 +23,8 @@ class MainApp extends StatefulWidget {
 
 class _MainApp extends State<MainApp> {
   bool isDarkMode = false;
+  String userName = '';
+  String email = '';
 
   Map<String, dynamic> recipeData = {};
 
@@ -48,6 +50,13 @@ class _MainApp extends State<MainApp> {
     }
   }
 
+Future<void> loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('userName') ?? 'Guest';
+    });
+  }
+
   Map<String, dynamic> parseRecipeData(String responseBody) {
     try {
       final dynamic decoded = json.decode(responseBody);
@@ -70,6 +79,7 @@ class _MainApp extends State<MainApp> {
   void initState() {
     super.initState();
     loadDarkModePreference();
+    loadUserName();
     _searchRecipes();
   }
 
@@ -195,13 +205,13 @@ class _MainApp extends State<MainApp> {
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
-                      children: const [
-                        TextSpan(text: 'Welcome back, '),
+                      children: [
+                        const TextSpan(text: 'Welcome back, '),
                         TextSpan(
-                          text: '[Name]',
-                          style: TextStyle(color: Colors.teal),
+                          text: userName,
+                          style: const TextStyle(color: Colors.teal),
                         ),
-                        TextSpan(text: '!'),
+                        const TextSpan(text: '!'),
                       ],
                     ),
                   ),
@@ -377,22 +387,22 @@ class _MainApp extends State<MainApp> {
                       },
                       style: ButtonStyle(
                         foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.teal),
+                            WidgetStateProperty.all<Color>(Colors.teal),
                         backgroundColor: isDarkMode
-                            ? MaterialStateProperty.all<Color>(
+                            ? WidgetStateProperty.all<Color>(
                                 Colors.grey.shade900)
-                            : MaterialStateProperty.all(
+                            : WidgetStateProperty.all(
                                 const Color(0xFFEEEEEE),
                               ),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                         ),
-                        side: MaterialStateProperty.all<BorderSide>(
+                        side: WidgetStateProperty.all<BorderSide>(
                           const BorderSide(color: Colors.teal),
                         ),
-                        minimumSize: MaterialStateProperty.all<Size>(
+                        minimumSize: WidgetStateProperty.all<Size>(
                           const Size(390, 40),
                         ),
                       ),
